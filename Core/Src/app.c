@@ -2,11 +2,21 @@
 #include "rgb.h"
 #include "buttons.h"
 
-void app_main(void) {
-	buttons_update();
+#define TICK_FREQUENCY_HZ 1000
+#define HZ_TO_TICKS(FREQUENCY_HZ) (TICK_FREQUENCY_HZ/FREQUENCY_HZ)
 
-	HAL_Delay(10);
+#define BLINKY_TASK_PERIOD_TICKS (TICK_FREQUENCY_HZ / 2)
+#define BUTTON_TASK_PERIOD_TICKS (TICK_FREQUENCY_HZ / 100)
+
+static uint32_t blinkyTaskNextRun = 0;
+static uint32_t buttonTaskNextRun = 0;
+
+void blinky_task_execute() {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+}
+
+void button_task_execute() {
+	buttons_update();
 
 	if (buttons_checkButton(UP) == PUSHED)
 		rgb_led_toggle(RGB_UP);
@@ -21,8 +31,25 @@ void app_main(void) {
 			rgb_led_toggle(RGB_RIGHT);
 }
 
+void app_main(void) {
+	uint32_t ticks = HAL_GetTick();
+
+	if (ticks > blinkyTaskNextRun) {
+		blinky_task_execute();
+		blinkyTaskNextRun += BLINKY_TASK_PERIOD_TICKS;
+	}
+
+	if (ticks > buttonTaskNextRun) {
+		button_task_execute();
+		buttonTaskNextRun += BUTTON_TASK_PERIOD_TICKS;
+	}
+}
+
 void app_setup(void) {
 	rgb_led_all_off();
 	rgb_colour_all_on();
 	buttons_init();
+
+	blinkyTaskNextRun = HAL_GetTick() + BLINKY_TASK_PERIOD_TICKS;
+	buttonTaskNextRun = HAL_GetTick() + BUTTON_TASK_PERIOD_TICKS;
 }
