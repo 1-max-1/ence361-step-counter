@@ -1,48 +1,28 @@
 #include "gpio.h"
 #include "rgb.h"
+#include "buttons.h"
 
 void app_main(void) {
-  HAL_Delay(200);
-  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	buttons_update();
 
-  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11))
-  {
-	rgb_led_on(RGB_UP);
-  }
-  else
-  {
-	rgb_led_off(RGB_UP);
-  }
+	HAL_Delay(10);
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
-  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_1))
-    {
-  	rgb_led_on(RGB_DOWN);
-    }
-    else
-    {
-  	rgb_led_off(RGB_DOWN);
-    }
+	if (buttons_checkButton(UP) == PUSHED)
+		rgb_led_toggle(RGB_UP);
 
-  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
-    {
-  	rgb_led_on(RGB_RIGHT);
-    }
-    else
-    {
-  	rgb_led_off(RGB_RIGHT);
-    }
+	if (buttons_checkButton(DOWN) == PUSHED)
+			rgb_led_toggle(RGB_DOWN);
 
-  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
-    {
-  	rgb_led_off(RGB_LEFT);
-    }
-    else
-    {
-  	rgb_led_on(RGB_LEFT);
-    }
+	if (buttons_checkButton(LEFT) == PUSHED)
+			rgb_led_toggle(RGB_LEFT);
+
+	if (buttons_checkButton(RIGHT) == PUSHED)
+			rgb_led_toggle(RGB_RIGHT);
 }
 
 void app_setup(void) {
 	rgb_led_all_off();
 	rgb_colour_all_on();
+	buttons_init();
 }
