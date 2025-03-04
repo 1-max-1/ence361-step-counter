@@ -23,14 +23,14 @@ void app_main(void) {
   	rgb_led_off(RGB_DOWN);
     }
 
-  if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
+  /*if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
     {
   	rgb_led_on(RGB_RIGHT);
     }
     else
     {
   	rgb_led_off(RGB_RIGHT);
-    }
+    }*/
 
   if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
     {
@@ -45,4 +45,13 @@ void app_main(void) {
 void app_setup(void) {
 	rgb_led_all_off();
 	rgb_colour_all_on();
+}
+
+void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin) {
+	static int count = 0;
+
+	if (GPIO_Pin & GPIO_PIN_10) {
+		count++;
+		rgb_led_toggle(RGB_RIGHT);
+	}
 }
