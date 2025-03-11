@@ -30,9 +30,10 @@ void displayTaskExecute() {
 	snprintf(buf2, 10, "Y: %u ", y);
 	ssd1306_WriteString(buf2, Font_7x10, White);
 
+	ssd1306_UpdateScreen();
+
 	char buf3[21];
 	snprintf(buf3, 21, "X: %u, Y: %u\r\n", x, y);
-	HAL_UART_Transmit(&huart2, (uint8_t*)buf3, strlen(buf3), 1000);
-
-	ssd1306_UpdateScreen();
+	//HAL_UART_Transmit(&huart2, (uint8_t*)buf3, strlen(buf3), 1000);
+	printf("X: %u, Y: %u\r\n", x, y);
 }
