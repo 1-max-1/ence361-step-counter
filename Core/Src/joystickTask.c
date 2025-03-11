@@ -12,3 +12,11 @@ void joystick_task_execute() {
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 
 }
+
+uint16_t getX() {
+	return raw_adc[1];
+}
+
+uint16_t getY() {
+	return raw_adc[0];
+}
