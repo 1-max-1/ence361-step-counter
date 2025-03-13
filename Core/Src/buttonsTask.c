@@ -1,6 +1,8 @@
 #include "buttonsTask.h"
 #include "buttons.h"
 #include "rgb.h"
+#include "pwm.h"
+#include "tim.h"
 
 void buttonsTaskSetup() {
 	buttons_init();
@@ -9,8 +11,11 @@ void buttonsTaskSetup() {
 void button_task_execute() {
 	buttons_update();
 
-	if (buttons_checkButton(UP) == PUSHED)
-		rgb_led_toggle(RGB_UP);
+	if (buttons_checkButton(UP) == PUSHED) {
+		uint8_t duty = pwm_getDutyCycle(&htim2, TIM_CHANNEL_3);
+		duty = (duty == 100 ? 0 : duty + 25);
+		pwm_setDutyCycle(&htim2, TIM_CHANNEL_3, duty);
+	}
 
 	if (buttons_checkButton(DOWN) == PUSHED)
 		rgb_led_toggle(RGB_DOWN);

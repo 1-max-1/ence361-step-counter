@@ -13,19 +13,19 @@
 void displayTaskSetup() {
 	ssd1306_Init();
 	ssd1306_SetCursor(0, 0);
-	//ssd1306_WriteString("Hello world!", Font_7x10, White);
+	ssd1306_WriteString("Hello world!", Font_7x10, White);
 }
 
 void displayTaskExecute() {
 	uint16_t x = getX();
 	uint16_t y = getY();
 
-	ssd1306_SetCursor(0, 0);
+	ssd1306_SetCursor(0, 15);
 	char buf[10];
 	snprintf(buf, 10, "X: %u ", x);
 	ssd1306_WriteString(buf, Font_7x10, White);
 
-	ssd1306_SetCursor(0, 15);
+	ssd1306_SetCursor(0, 30);
 	char buf2[10];
 	snprintf(buf2, 10, "Y: %u ", y);
 	ssd1306_WriteString(buf2, Font_7x10, White);
