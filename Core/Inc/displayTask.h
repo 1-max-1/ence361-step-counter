@@ -12,4 +12,6 @@ void displayTaskSetup();
 
 void displayTaskExecute();
 
+void toggleUSARTPrinting();
+
 #endif /* DISPLAYTASK_H_ */
