@@ -1,3 +1,12 @@
+/*
+ * displayTask.h
+ *
+ *  Authors: Max Hosking, Alex Pirie
+ *
+ *  This task handles displaying the joystick values on the LCD screen,
+ *  and also displaying them on the computer by printing over serial.
+ */
+
 #include "displayTask.h"
 #include "joystickTask.h"
 
@@ -11,6 +20,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+// Maximum and minimum values for joystick positions
 #define JOYSTICK_LEFT_OUTER_VAL 4095
 #define JOYSTICK_LEFT_INNER_VAL 2300
 #define JOYSTICK_RIGHT_OUTER_VAL 133
@@ -31,23 +41,27 @@ void displayTaskSetup() {
 	ssd1306_SetCursor(0, 0);
 }
 
+// Show raw ADC values on screen for x and y axes
 void displayADCValues(uint16_t x, uint16_t y) {
-	ssd1306_SetCursor(0, 0);
 	char buf[10];
 	snprintf(buf, 10, "X: %u ", x);
+	ssd1306_SetCursor(0, 0);
 	ssd1306_WriteString(buf, Font_7x10, White);
 
-	ssd1306_SetCursor(0, 13);
 	char buf2[10];
 	snprintf(buf2, 10, "Y: %u ", y);
+	ssd1306_SetCursor(0, 13);
 	ssd1306_WriteString(buf2, Font_7x10, White);
 }
 
+// Show joystick direction and percentage on screen, for x and y axes
 void displayJoystickState(uint16_t x, uint16_t y) {
 	uint16_t xPercentage = 0;
 	uint16_t yPercentage = 0;
 	const char* xString = "Rest";
 	const char* yString = "Rest";
+
+	// Calculate direction and percentage
 
 	if (x >= JOYSTICK_LEFT_INNER_VAL) {
 		xString = "Left";

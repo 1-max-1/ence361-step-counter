@@ -1,4 +1,13 @@
-#include "buttonsTask.h"
+/**
+ * buttonControlTask.c
+ *
+ * Authors: Max Hosking, Alex Pirie
+ *
+ * This task allows control of the white LED's through button presses
+ * Also can toggle ADC value printing
+ */
+
+#include "buttonControlTask.h"
 #include "displayTask.h"
 
 #include "buttons.h"
@@ -6,20 +15,23 @@
 #include "tim.h"
 #include "pwm.h"
 
+#define DUTY_CYCLE_INCREMENT 10
+
+// Increment pwm duty cycle for the DS3 led
 void incrementDS3PWM() {
 	uint8_t duty = pwm_getDutyCycle(&htim2, TIM_CHANNEL_3);
-	duty = (duty == 100 ? 0 : duty + 10);
+	duty = (duty == 100 ? 0 : duty + DUTY_CYCLE_INCREMENT);
 	pwm_setDutyCycle(&htim2, TIM_CHANNEL_3, duty);
 }
 
-void buttonsTaskSetup() {
+void buttonControlTaskSetup() {
 	buttons_init();
 	rgb_led_all_off();
-	rgb_colour_all_on();
+	rgb_colour_all_on(); // White
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
 }
 
-void button_task_execute() {
+void buttonControlTaskExecute() {
 	buttons_update();
 
 	if (buttons_checkButton(UP) == PUSHED) {

@@ -1,3 +1,11 @@
+/**
+ * joystickTask.h
+ *
+ * Authors: Max Hosking, Alex Pirie
+ *
+ * This task stores values from the ADC connected to the joystick
+ */
+
 #include "joystickTask.h"
 
 #include "gpio.h"
@@ -5,7 +13,11 @@
 
 static uint16_t raw_adc[2];
 
-void joystick_task_execute() {
+void joystickTaskSetup() {
+	; // No setup needed currently
+}
+
+void joystickTaskExecute() {
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)raw_adc, 2);
 }
 

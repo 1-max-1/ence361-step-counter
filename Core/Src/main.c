@@ -97,14 +97,14 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  app_setup();
+  appSetup();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	app_main();
+	appMain();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

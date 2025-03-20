@@ -1,17 +1,19 @@
 /*
  * displayTask.h
  *
- *  Created on: Mar 12, 2025
- *      Author: mho154
+ *  Authors: Max Hosking, Alex Pirie
+ *
+ *  This task handles displaying the joystick values on the LCD screen,
+ *  and also displaying them on the computer by printing over serial.
  */
 
-#ifndef DISPLAYTASK_H_
-#define DISPLAYTASK_H_
+#ifndef _DISPLAY_TASK_H_
+#define _DISPLAY_TASK_H_
 
 void displayTaskSetup();
-
 void displayTaskExecute();
 
+// Toggles whether joystick values will be printed over the USART connection
 void toggleUSARTPrinting();
 
-#endif /* DISPLAYTASK_H_ */
+#endif
