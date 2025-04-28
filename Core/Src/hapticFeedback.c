@@ -3,6 +3,8 @@
  *
  *  Created on: Apr 28, 2025
  *      Authors: Max Hosking, Alex Pirie
+ *
+ *  This hardware module allows control of the haptic feedback motor.
  */
 
 
