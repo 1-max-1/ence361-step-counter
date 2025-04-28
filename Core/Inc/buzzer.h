@@ -2,7 +2,7 @@
 #define _BUZZER_H
 
 
-typedef enum pitch {LOW = 0, MED, HIGH} buzzerPitch_t;
+typedef enum pitch {LOW = 0, HIGH} buzzerPitch_t;
 
 void buzzer_init();
 

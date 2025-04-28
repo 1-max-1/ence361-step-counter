@@ -21,11 +21,8 @@ void buzzer_start(buzzerPitch_t pitch) {
 	case LOW:
 		pwm_setDutyCycle(&htim16, TIM_CHANNEL_1, 20);
 		break;
-	case MED:
-		pwm_setDutyCycle(&htim16, TIM_CHANNEL_1, 50);
-		break;
 	case HIGH:
-		pwm_setDutyCycle(&htim16, TIM_CHANNEL_1, 80);
+		pwm_setDutyCycle(&htim16, TIM_CHANNEL_1, 50);
 		break;
 	}
 }
