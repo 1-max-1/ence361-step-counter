@@ -10,9 +10,11 @@
 #define _JOYSTICK_H_
 #include <stdint.h>
 
-typedef enum xDir {RESTX=0, LEFT, RIGHT} xDirection_t;
-typedef enum yDir {RESTY=0, UP, DOWN} yDirection_t;
+typedef enum {RESTX=0, LEFT, RIGHT} xDirection_t;
+typedef enum {RESTY=0, UP, DOWN} yDirection_t;
+typedef enum {RELEASED=0, PRESSED, LONG_PRESSED} joystickButtonState_t;
 
+void joystickSetup();
 //poll joystick ADC
 void joystickExecute();
 // Return ADC value for x-axis
@@ -27,5 +29,7 @@ uint16_t getYPower();
 xDirection_t getXDirection();
 //Return direction in y-axis
 yDirection_t getYDirection();
+//Return joystick button state
+joystickButtonState_t getJoystickButtonState();
 
 #endif

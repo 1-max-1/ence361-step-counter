@@ -33,6 +33,7 @@ void appSetup(void) {
 	buttonControlTaskSetup();
 	blinkyTaskSetup();
 	displayTaskSetup();
+	joystickSetup();
 
 	blinkyTaskNextRun = HAL_GetTick() + BLINKY_TASK_PERIOD_TICKS;
 	buttonControlTaskNextRun = HAL_GetTick() + BUTTON_TASK_PERIOD_TICKS;
