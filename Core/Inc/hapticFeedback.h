@@ -12,6 +12,6 @@
 
 #include <stdbool.h>
 
-void setState(bool state);
+void setHapticMotorState(bool state);
 
 #endif /* INC_HAPTICFEEDBACK_H_ */
