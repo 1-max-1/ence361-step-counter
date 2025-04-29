@@ -14,8 +14,11 @@
 #include "rgb.h"
 #include "tim.h"
 #include "pwm.h"
+#include "buzzer.h" // testing buzzer code -- remove
+
 
 #define DUTY_CYCLE_INCREMENT 10
+
 
 // Increment pwm duty cycle for the DS3 led
 void incrementDS3PWM() {
@@ -32,6 +35,7 @@ void buttonControlTaskSetup() {
 }
 
 void buttonControlTaskExecute() {
+
 	buttons_update();
 
 	if (buttons_checkButton(UP) == PUSHED) {
@@ -43,9 +47,13 @@ void buttonControlTaskExecute() {
 		toggleUSARTPrinting();
 	}
 
-	if (buttons_checkButton(LEFT) == PUSHED)
+	if (buttons_checkButton(LEFT) == PUSHED) {
 		rgb_led_toggle(RGB_LEFT);
+		buzzer_start(LOW); //testing buzzer code -- remove
+	}
 
-	if (buttons_checkButton(RIGHT) == PUSHED)
+	if (buttons_checkButton(RIGHT) == PUSHED) {
 		rgb_led_toggle(RGB_RIGHT);
+		buzzer_stop(); //testing buzzer code -- remove
+	}
 }
