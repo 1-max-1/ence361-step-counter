@@ -49,7 +49,7 @@ void buttonControlTaskExecute() {
 
 	if (buttons_checkButton(LEFT) == PUSHED) {
 		rgb_led_toggle(RGB_LEFT);
-		buzzer_start(LOW); //testing buzzer code -- remove
+		buzzer_start(HIGH); //testing buzzer code -- remove
 	}
 
 	if (buttons_checkButton(RIGHT) == PUSHED) {
