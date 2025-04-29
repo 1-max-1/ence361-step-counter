@@ -10,7 +10,6 @@
 #include "displayTask.h"
 #include "joystickTask.h"
 
-#include "ssd1306_conf.h"
 #include "ssd1306_fonts.h"
 #include "ssd1306.h"
 #include "usart.h"
