@@ -10,6 +10,7 @@
 #ifndef _DISPLAY_TASK_H_
 #define _DISPLAY_TASK_H_
 
+void displayTaskSetup();
 void displayTaskExecute();
 
 #endif

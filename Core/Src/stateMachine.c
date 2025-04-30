@@ -22,9 +22,10 @@ void incrementState() {
 	if (currentState > FINAL_STATE_IN_MAIN_LOOP)
 		return;
 
-	currentState++;
-	if (currentState > FINAL_STATE_IN_MAIN_LOOP)
+	if (currentState + 1 > FINAL_STATE_IN_MAIN_LOOP)
 		currentState = 0;
+	else
+		currentState++;
 }
 
 void decrementState() {
@@ -32,9 +33,10 @@ void decrementState() {
 	if (currentState > FINAL_STATE_IN_MAIN_LOOP)
 		return;
 
-	currentState--;
-	if (currentState < 0)
+	if (currentState - 1 < 0)
 		currentState = FINAL_STATE_IN_MAIN_LOOP;
+	else
+		currentState--;
 }
 
 state_t getState() {

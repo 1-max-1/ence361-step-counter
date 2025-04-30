@@ -24,13 +24,15 @@
 
 // All pages share same basic layout
 void renderGenericLayout(char* title, uint16_t data, char* unit) {
-	ssd1306_SetCursor(0, 0);
-	ssd1306_WriteString(title, Font_11x18, White);
+	ssd1306_Fill(Black);
+	ssd1306_SetCursor(0, 10);
+	ssd1306_WriteString(title, Font_7x10, White);
 
 	char buf[LONGEST_DATA_STRING];
 	snprintf(buf, LONGEST_DATA_STRING, "%u %s", data, unit);
-	ssd1306_SetCursor(0, 40);
-	ssd1306_WriteString(buf, Font_11x18, White);
+	ssd1306_SetCursor(0, 25);
+	ssd1306_WriteString(buf, Font_7x10, White);
+	ssd1306_UpdateScreen();
 }
 
 void renderGoalPage() {
