@@ -22,6 +22,7 @@
 void goalChangeStateLogic() {
 	uint8_t potPercentage = getPotPercentage();
 	uint16_t tentativeGoal = (GOAL_INCREMENT_STEPS * (uint8_t)(potPercentage / GOAL_INCREMENT_PERCENT)) + GOAL_INCREMENT_OFFSET;
+	setTentativeGoal(tentativeGoal);
 
 	if (getJoystickButtonState() == LONG_PRESSED) {
 		setGoal(tentativeGoal);
