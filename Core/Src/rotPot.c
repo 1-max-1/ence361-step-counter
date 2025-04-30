@@ -15,22 +15,17 @@
 #include <stdint.h>
 #include <stdio.h>
 
-static uint16_t potVal = 0;
-
 #define POT_MIN 106
 #define POT_MAX 4095
 
-void potentiometerUpdate() {
-	potVal = adcTask_getRotPot();
-}
+
 
 uint16_t getRawPotVal() {
-	return potVal;
+	return adcTask_getRotPot();
 }
 
 uint8_t getPotPercentage() {
-	uint16_t val = potVal;
-
+	uint16_t val = adcTask_getRotPot();
 	// In case of glitch
 	if (val > POT_MAX)
 		val = POT_MAX;

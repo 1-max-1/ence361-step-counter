@@ -40,7 +40,7 @@ void renderGoalPage() {
 		renderGenericLayout("Goal progress:", getGoalPercent(), "%");
 	} else {
 		char ratioBuf[LONGEST_DATA_STRING];
-		snprintf(ratioBuf, LONGEST_DATA_STRING, "/%u", getGoal());
+		snprintf(ratioBuf, LONGEST_DATA_STRING, "/ %u", getGoal());
 		renderGenericLayout("Goal progress:", getSteps() , ratioBuf);
 	}
 }

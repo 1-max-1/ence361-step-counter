@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "joystick.h"
 #include "rotPot.h"
@@ -31,6 +32,7 @@ void goalChangeStateLogic() {
 	uint8_t potPercentage = getPotPercentage();
 	uint16_t tentativeGoal = (GOAL_INCREMENT_STEPS * (uint8_t)(potPercentage / GOAL_INCREMENT_PERCENT)) + GOAL_INCREMENT_OFFSET;
 	setTentativeGoal(tentativeGoal);
+	printf("%u\r\n", potPercentage);
 
 	buttonState_t buttonState = getJoystickButtonState();
 	if (buttonState == LONG_PRESSED) {
