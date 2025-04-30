@@ -35,7 +35,7 @@ void enterGoalChangeState();
 // Exits SET_GOAL back into the GOAL_PROGRESS state. No sanity checks, can be called anywhere.
 void exitGoalChangeState();
 
-void setTestModeEnable(bool);
 bool isTestModeEnabled();
+void toggleTestMode();
 
 #endif /* _STATE_MACHINE_H_ */

@@ -49,8 +49,8 @@ void exitGoalChangeState() {
 	currentState = GOAL_PROGRESS;
 }
 
-void setTestModeEnable(bool enable) {
-	testModeEnabled = enable;
+void toggleTestMode() {
+	testModeEnabled = !testModeEnabled;
 }
 
 bool isTestModeEnabled() {
