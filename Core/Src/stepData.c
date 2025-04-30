@@ -33,12 +33,20 @@ uint16_t getSteps() {
 	return stepCount;
 }
 
+void setSteps(uint16_t steps) {
+	stepCount = steps;
+}
+
 void incrementSteps() {
 	stepCount++;
 }
 
 void setGoal(uint16_t newGoal) {
 	currentGoal = newGoal;
+}
+
+uint16_t getGoal() {
+	return currentGoal;
 }
 
 uint16_t getGoalPercent() {

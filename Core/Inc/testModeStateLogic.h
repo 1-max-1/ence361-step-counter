@@ -15,4 +15,7 @@
 // If so, test mode will be enabled. Call as a task.
 void checkForTestModeTrigger();
 
+// Run logic for test mode, call as task
+void testModeStateLogic();
+
 #endif /* _TEST_MODESTATELOGIC_H_ */
