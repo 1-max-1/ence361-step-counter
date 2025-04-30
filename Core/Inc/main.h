@@ -69,6 +69,8 @@ void Error_Handler(void);
 #define SW2_GPIO_Port GPIOC
 #define RGB_DS2_Pin GPIO_PIN_2
 #define RGB_DS2_GPIO_Port GPIOC
+#define POTENTIOMETER_Pin GPIO_PIN_1
+#define POTENTIOMETER_GPIO_Port GPIOA
 #define NUCLEO_LD1_Pin GPIO_PIN_5
 #define NUCLEO_LD1_GPIO_Port GPIOA
 #define JOYSTICK_Y_Pin GPIO_PIN_4
@@ -79,6 +81,8 @@ void Error_Handler(void);
 #define JOYSTICK_CLICK_GPIO_Port GPIOB
 #define NUCLEO_LD2_Pin GPIO_PIN_9
 #define NUCLEO_LD2_GPIO_Port GPIOC
+#define MOTOR_Pin GPIO_PIN_1
+#define MOTOR_GPIO_Port GPIOD
 #define RGB_GREEN_Pin GPIO_PIN_2
 #define RGB_GREEN_GPIO_Port GPIOD
 #define RGB_RED_Pin GPIO_PIN_3
