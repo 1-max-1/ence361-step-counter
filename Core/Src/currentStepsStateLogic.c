@@ -1,5 +1,5 @@
 /**
- * currentSteps.c
+ * currentStepsStateLogic.c
  *
  * state logic for when in state 0, CURRENT STEPS
  *
