@@ -59,7 +59,7 @@ void appMain(void) {
 	}
 
 	if (ticks > joystickNextRun) {
-		joystickExecute();
+		joystickUpdate();
 		joystickNextRun += JOYSTICK_PERIOD_TICKS;
 	}
 

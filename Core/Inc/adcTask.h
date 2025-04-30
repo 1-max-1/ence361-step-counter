@@ -3,10 +3,10 @@
 
 void adcTaskExecute();
 
-uint16_t getRotPot();
+uint16_t adcTask_getRotPot();
 
-uint16_t getJoystickY();
+uint16_t adcTask_getJoystickY();
 
-uint16_t getJoystickX();
+uint16_t adcTask_getJoystickX();
 
 #endif

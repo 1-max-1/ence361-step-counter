@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-void readPotValFromADC();
+void potentiometerUpdate();
 uint16_t getRawPotVal();
 uint8_t getPotPercentage();
 

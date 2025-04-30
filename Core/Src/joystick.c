@@ -49,9 +49,9 @@ void joystickSetup() {
 	joystickButton.normalState = GPIO_PIN_RESET;
 }
 
-void joystickExecute() {
-	raw_adc[0] = getJoystickY();
-	raw_adc[1] = getJoystickX();
+void joystickUpdate() {
+	raw_adc[0] = adcTask_getJoystickY();
+	raw_adc[1] = adcTask_getJoystickX();
 
 	GPIO_PinState rawState = HAL_GPIO_ReadPin(joystickButton.port, joystickButton.pin);
 

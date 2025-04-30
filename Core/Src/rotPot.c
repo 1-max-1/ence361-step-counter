@@ -10,20 +10,18 @@
 
 #include "rotPot.h"
 
-#include "adc.h"
+#include "adcTask.h"
 
 #include <stdint.h>
 #include <stdio.h>
 
-static uint16_t raw_adc[3] = {0};
 static uint16_t potVal = 0;
 
 #define POT_MIN 106
 #define POT_MAX 4095
 
-void readPotValFromADC() {
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)raw_adc, 3);
-	potVal = raw_adc[0];
+void potentiometerUpdate() {
+	potVal = adcTask_getRotPot();
 }
 
 uint16_t getRawPotVal() {

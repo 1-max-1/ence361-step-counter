@@ -16,7 +16,7 @@ typedef enum {RELEASED=0, PRESSED, LONG_PRESSED} joystickButtonState_t;
 
 void joystickSetup();
 //poll joystick ADC
-void joystickExecute();
+void joystickUpdate();
 // Return ADC value for x-axis
 uint16_t getXRaw();
 // Return ADC value for y-axis

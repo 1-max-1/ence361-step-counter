@@ -14,14 +14,14 @@ void adcTaskExecute() {
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)raw_adc, 3);
 }
 
-uint16_t getRotPot() {
+uint16_t adcTask_getRotPot() {
 	return raw_adc[0];
 }
 
-uint16_t getJoystickY() {
-	return raw_adc[2];
+uint16_t adcTask_getJoystickY() {
+	return raw_adc[1];
 }
 
-uint16_t getJoystickX() {
-	return raw_adc[1];
+uint16_t adcTask_getJoystickX() {
+	return raw_adc[2];
 }
