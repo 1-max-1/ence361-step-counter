@@ -10,6 +10,7 @@
 #include "joystick.h"
 #include "stepData.h"
 #include "stateMachine.h"
+#include "goalProgressStateLogic.h"
 
 #define STATE_SWITCH_THRESHOLD 70 // percent
 #define UNIT_SWITCH_THRESHOLD 70 // percent

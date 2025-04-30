@@ -12,7 +12,7 @@
 
 typedef enum {RESTX=0, LEFT, RIGHT} xDirection_t;
 typedef enum {RESTY=0, UP, DOWN} yDirection_t;
-typedef enum {RELEASED=0, PRESSED, LONG_PRESSED} joystickButtonState_t;
+typedef enum {NO_CHANGE=0, RELEASED, PRESSED, LONG_PRESSED} joystickButtonState_t;
 
 void joystickSetup();
 //poll joystick ADC

@@ -38,6 +38,10 @@ goalUnit_t getGoalUnit();
 void toggleDistanceUnit();
 //Toggles goal unit
 void toggleGoalUnit();
+//Updates tentative new goal value
+void setTentativeGoal(uint16_t newTentativeGoal);
+//Returns tentative goal
+uint16_t getTentativeGoal();
 
 
 #endif
