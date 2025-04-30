@@ -13,5 +13,6 @@
 void renderGoalPage();
 void renderStepsTakenPage();
 void renderDistanceTravelledPage();
+void renderGoalChangePage();
 
 #endif /* _UI_DISPLAY_H_ */

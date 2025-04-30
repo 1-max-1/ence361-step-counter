@@ -13,6 +13,7 @@
 #include "ssd1306_conf.h"
 #include "ssd1306_fonts.h"
 #include "ssd1306.h"
+#include "stepData.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -33,17 +34,27 @@ void renderGenericLayout(char* title, uint16_t data, char* unit) {
 }
 
 void renderGoalPage() {
-	// TODO: get current steps data
-	renderGenericLayout("Goal progress:", 0, "%");
+	if (getGoalUnit() == PERCENT) {
+		renderGenericLayout("Goal progress:", getGoalPercent(), "%");
+	} else {
+		char ratioBuf[LONGEST_DATA_STRING];
+		snprintf(ratioBuf, LONGEST_DATA_STRING, "/%u", getGoal());
+		renderGenericLayout("Goal progress:", getSteps() , ratioBuf);
+	}
 }
 
 void renderStepsTakenPage() {
-	// TODO: get current steps data
-	renderGenericLayout("Steps taken:", 0, "steps");
+	renderGenericLayout("Steps taken:", getSteps(), "steps");
 }
 
 void renderDistanceTravelledPage() {
-	char* unit = 1 ? "km" : "miles";
-	// TODO: get current steps data
-	renderGenericLayout("Distance traveled:", 0, unit);
+	if (getDistanceUnit() == KM) {
+		renderGenericLayout("Distance traveled:", getDistance(), "km");
+	} else {
+		renderGenericLayout("Distance traveled:", getDistance(), "yards");
+	}
+}
+
+void renderGoalChangePage() {
+	renderGenericLayout("New goal:", getTentativeGoal(), "steps");
 }
