@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 
+void toggleUsartPrinting();
 void sendADCValToUSART(uint16_t pot, uint16_t x, uint16_t y);
 
 #endif
