@@ -9,6 +9,8 @@
 #ifndef _USART_PRINTING_H_
 #define _USART_PRINTING_H_
 
+#include <stdint.h>
+
 void sendADCValToUSART(uint16_t pot, uint16_t x, uint16_t y);
 
 #endif

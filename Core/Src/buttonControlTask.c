@@ -44,7 +44,6 @@ void buttonControlTaskExecute() {
 
 	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_DOWN);
-		toggleUSARTPrinting();
 	}
 
 	if (buttons_checkButton(LEFT_BUTTON) == PRESSED) {

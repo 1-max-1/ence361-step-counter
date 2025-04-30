@@ -38,7 +38,6 @@ static uint32_t logicTaskNextRun = 0;
 void appSetup(void) {
 	buttonControlTaskSetup();
 	blinkyTaskSetup();
-	displayTaskSetup();
 	joystickSetup();
 
 	blinkyTaskNextRun = HAL_GetTick() + BLINKY_TASK_PERIOD_TICKS;
