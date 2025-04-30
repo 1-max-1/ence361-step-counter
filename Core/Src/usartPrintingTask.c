@@ -30,5 +30,5 @@ void usartPrintingExecute() {
 		//printf("Pot: %u, X: %u, Y: %u\r\n", x, y);
 	}*/
 
-	printf("State: %d, Test: %d\r\n", getState(), isTestModeEnabled());
+	//printf("State: %d, Test: %d\r\n", getState(), isTestModeEnabled());
 }

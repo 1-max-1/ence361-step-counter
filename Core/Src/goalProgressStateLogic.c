@@ -6,7 +6,9 @@
  * Author: Alex Pirie
  *
  */
+
 #include <stdint.h>
+
 #include "joystick.h"
 #include "stepData.h"
 #include "stateMachine.h"
@@ -51,7 +53,9 @@ void goalProgressStateLogic() {
 		canChangeUnit = true;
 	}
 
-	if (getJoystickButtonState() == LONG_PRESSED) { // if joystick button long pressed enter goal change state
+	// if joystick button long pressed enter goal change state
+	buttonState_t s = getJoystickButtonState();
+	if (s == LONG_PRESSED) {
 		enterGoalChangeState();
 	}
 }

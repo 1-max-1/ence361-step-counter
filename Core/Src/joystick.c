@@ -66,10 +66,11 @@ void joystickUpdate() {
     		joystickButton.newStateCount = 0;
     		joystickButton.heldCount = 0;
     	}
-    } else if (joystickButton.state != joystickButton.normalState && joystickButton.heldCount <= BUT_POLL_HZ) {
+    } else if (joystickButton.state != joystickButton.normalState && joystickButton.heldCount < BUT_POLL_HZ) {
     	joystickButton.heldCount++;
-    } else if (joystickButton.heldCount > BUT_POLL_HZ) {
+    } else if (joystickButton.heldCount == BUT_POLL_HZ) { // Now entering the long_press state
     	joystickButton.hasChanged = true;
+    	joystickButton.heldCount++;
     } else {
     	joystickButton.newStateCount = 0;
     }
@@ -136,7 +137,7 @@ uint16_t getYPower() {
 		 joystickButton.hasChanged = false;
 		 if (joystickButton.state == joystickButton.normalState) {
 			 return RELEASED;
-		 } else if (joystickButton.heldCount > BUT_POLL_HZ) {
+		 } else if (joystickButton.heldCount >= BUT_POLL_HZ) {
 			 return LONG_PRESSED;
 		 } else {
 			 return PRESSED;
