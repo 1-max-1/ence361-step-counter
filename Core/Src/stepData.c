@@ -23,7 +23,6 @@ static uint16_t currentGoal;
 void stepDataSetup() {
 	stepCount = 0;
 	distanceTravelled = 0;
-	goalPercent = 0;
 	distUnit = KM;
 	goalUnit = PERCENT;
 	currentGoal = 1000;
