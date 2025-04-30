@@ -11,19 +11,20 @@
 #include "gpio.h"
 
 #include "joystick.h"
-#include "buttonControlTask.h"
+#include "buttons.h"
 #include "blinkyTask.h"
 #include "displayTask.h"
 #include "adcTask.h"
 #include "stateLogicTask.h"
 #include "usartPrintingTask.h"
 #include "stepData.h"
+#include "testModeStateLogic.h"
 
 #define TICK_FREQUENCY_HZ 1000
 #define HZ_TO_TICKS(FREQUENCY_HZ) (TICK_FREQUENCY_HZ/FREQUENCY_HZ)
 
 #define BLINKY_TASK_PERIOD_TICKS HZ_TO_TICKS(2)
-#define BUTTON_TASK_PERIOD_TICKS HZ_TO_TICKS(100)
+#define BUTTON_UPDATE_PERIOD_TICKS HZ_TO_TICKS(100)
 #define JOYSTICK_PERIOD_TICKS HZ_TO_TICKS(100)
 #define DISPLAY_TASK_PERIOD_TICKS HZ_TO_TICKS(8)
 #define ADC_TASK_PERIOD_TICKS HZ_TO_TICKS(150)
@@ -32,7 +33,7 @@
 
 // Time (ticks) that the tasks are next scheduled for
 static uint32_t blinkyTaskNextRun = 0;
-static uint32_t buttonControlTaskNextRun = 0;
+static uint32_t buttonUpdateNextRun = 0;
 static uint32_t joystickNextRun = 0;
 static uint32_t displayTaskNextRun = 0;
 static uint32_t adcTaskNextRun = 0;
@@ -40,14 +41,15 @@ static uint32_t logicTaskNextRun = 0;
 static uint32_t usartPrintingNextRun = 0;
 
 void appSetup(void) {
-	buttonControlTaskSetup();
 	blinkyTaskSetup();
 	joystickSetup();
 	displayTaskSetup();
 	stepDataSetup();
+	buttons_init();
+	testModeInit();
 
 	blinkyTaskNextRun = HAL_GetTick() + BLINKY_TASK_PERIOD_TICKS;
-	buttonControlTaskNextRun = HAL_GetTick() + BUTTON_TASK_PERIOD_TICKS;
+	buttonUpdateNextRun = HAL_GetTick() + BUTTON_UPDATE_PERIOD_TICKS;
 	displayTaskNextRun = HAL_GetTick() + DISPLAY_TASK_PERIOD_TICKS;
 	joystickNextRun = HAL_GetTick() + JOYSTICK_PERIOD_TICKS;
 	adcTaskNextRun = HAL_GetTick() + ADC_TASK_PERIOD_TICKS;
@@ -63,9 +65,9 @@ void appMain(void) {
 		blinkyTaskNextRun += BLINKY_TASK_PERIOD_TICKS;
 	}
 
-	if (ticks > buttonControlTaskNextRun) {
-		buttonControlTaskExecute();
-		buttonControlTaskNextRun += BUTTON_TASK_PERIOD_TICKS;
+	if (ticks > buttonUpdateNextRun) {
+		buttons_update();
+		buttonUpdateNextRun += BUTTON_UPDATE_PERIOD_TICKS;
 	}
 
 	if (ticks > joystickNextRun) {

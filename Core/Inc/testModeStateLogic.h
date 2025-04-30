@@ -11,6 +11,8 @@
 #ifndef _TEST_MODESTATELOGIC_H_
 #define _TEST_MODESTATELOGIC_H_
 
+void testModeInit();
+
 // Checks if the user is trying to get into test mode.
 // If so, test mode will be enabled. Call as a task.
 void checkForTestModeTrigger();

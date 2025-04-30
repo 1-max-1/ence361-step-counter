@@ -13,6 +13,7 @@
 #include "stateMachine.h"
 #include "joystick.h"
 #include "stepData.h"
+#include "rgb.h"
 
 #include "stm32c0xx_hal.h"
 
@@ -21,6 +22,9 @@
 
 // Max time in ms between double tap of SW2, to trigger test mode
 #define TEST_MODE_TRIGGER_TIMEOUT 200
+
+// As a fraction of the current goal
+#define INCREMENT_SPEED_SCALER 450
 
 /**
  * The user must press SW2 twice in quick succession to trigger test mode.
@@ -32,10 +36,16 @@ uint32_t startTimeOfTriggerAttempt = 0;
 // True if the user has pressed button once and we still haven't timed out
 bool waitingForSecondPress = false;
 
+void testModeInit() {
+	rgb_colour_on(RGB_BLUE);
+}
+
 void checkForTestModeTrigger() {
 	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
-		if (waitingForSecondPress)
+		if (waitingForSecondPress) {
 			toggleTestMode();
+			rgb_led_toggle(RGB_DOWN);
+		}
 		else {
 			startTimeOfTriggerAttempt = HAL_GetTick();
 			waitingForSecondPress = true;
@@ -55,7 +65,7 @@ void testModeStateLogic() {
 
 		// The step increment changes based on how much we are pushing the joystick by
 		uint16_t currentGoal = getGoal();
-		int16_t fullIncrement = currentGoal / 100;
+		int16_t fullIncrement = currentGoal / INCREMENT_SPEED_SCALER;
 		int16_t scaledIncrement = fullIncrement * getYPower() / 100;
 		if (yDirection == DOWN)
 			scaledIncrement *= -1;

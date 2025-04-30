@@ -16,7 +16,7 @@
 // Debugging
 #include "stateMachine.h"
 
-static bool printUART;
+static bool printUART = false;
 
 void toggleUsartPrinting() {
 	printUART = !printUART;
