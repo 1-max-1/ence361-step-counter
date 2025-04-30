@@ -38,21 +38,21 @@ void buttonControlTaskExecute() {
 
 	buttons_update();
 
-	if (buttons_checkButton(UP) == PUSHED) {
+	if (buttons_checkButton(UP_BUTTON) == PRESSED) {
 		incrementDS3PWM();
 	}
 
-	if (buttons_checkButton(DOWN) == PUSHED) {
+	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_DOWN);
 		toggleUSARTPrinting();
 	}
 
-	if (buttons_checkButton(LEFT) == PUSHED) {
+	if (buttons_checkButton(LEFT_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_LEFT);
 		buzzer_start(HIGH); //testing buzzer code -- remove
 	}
 
-	if (buttons_checkButton(RIGHT) == PUSHED) {
+	if (buttons_checkButton(RIGHT_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_RIGHT);
 		buzzer_stop(); //testing buzzer code -- remove
 	}

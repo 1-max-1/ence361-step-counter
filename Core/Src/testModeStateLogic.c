@@ -33,7 +33,7 @@ uint32_t startTimeOfTriggerAttempt = 0;
 bool waitingForSecondPress = false;
 
 void checkForTestModeTrigger() {
-	if (buttons_checkButton(DOWN) == PRESSED) {
+	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
 		if (waitingForSecondPress)
 			toggleTestMode();
 		else {

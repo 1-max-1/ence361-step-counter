@@ -9,20 +9,20 @@
 // The buttons are UP and DOWN plus LEFT and RIGHT.
 //
 // Created by P.J. Bones, UC ECE
-// Updated by Le Yang & F. Youssif, UC ECE.
-// Last modified:  15/01/2025
+// Updated by Le Yang & F. Youssif, UC ECE
+// Further modified by Max Hosking, Alex Pirie
 // 
 // *******************************************************
 
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "buttonStates.h"
+
 //*****************************************************************************
 // Constants
 //*****************************************************************************
-typedef enum butNames {UP = 0, DOWN, LEFT, RIGHT, NUM_BUTTONS} buttonName_t;
-typedef enum butStates {RELEASED = 0, PUSHED, NO_CHANGE} buttonState_t;
-
+typedef enum butNames {UP_BUTTON = 0, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, NUM_BUTTONS} buttonName_t;
 
 // Debouncing algorithm: A finite state machine (FSM) is associated with each button.
 // A state change can be declared only after NUM_BUT_POLLS consecutive polls have

@@ -17,6 +17,7 @@
 #include <stdbool.h>
 
 #include "buttons.h"
+#include "buttonStates.h"
 #include "stm32c0xx_hal.h"
 
 #define NUM_BUT_POLLS 3
@@ -43,26 +44,26 @@ typedef struct
 buttonProperties_t buttons[NUM_BUTTONS] =
 {
 		// UP button (SW1, PC11, active HIGH)
-		[UP] = {
+		[UP_BUTTON] = {
 			.port = GPIOC,
 			.pin = GPIO_PIN_11,
 			.normalState = GPIO_PIN_RESET
 		},
 		// DOWN button (SW2, PC1, active HIGH)
-		[DOWN] = {
+		[DOWN_BUTTON] = {
 			.port = GPIOC,
 			.pin = GPIO_PIN_1,
 			.normalState = GPIO_PIN_RESET
 		},
 	    // LEFT button (SW4, PC13, active LOW)
-		[LEFT] =
+		[LEFT_BUTTON] =
 		{
 			.port = GPIOC,
 			.pin = GPIO_PIN_13,
 			.normalState = GPIO_PIN_SET
 		},
 		// RIGHT button (SW3, PC10, active HIGH)
-		[RIGHT] =
+		[RIGHT_BUTTON] =
 		{
 			.port = GPIOC,
 			.pin = GPIO_PIN_10,
@@ -131,7 +132,7 @@ buttonState_t buttons_checkButton (buttonName_t butName)
 		if (buttons[butName].state == buttons[butName].normalState)
 			return RELEASED;
 		else
-			return PUSHED;
+			return PRESSED;
 	}
 	return NO_CHANGE;
 }

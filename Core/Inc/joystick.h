@@ -8,11 +8,13 @@
 
 #ifndef _JOYSTICK_H_
 #define _JOYSTICK_H_
+
 #include <stdint.h>
+
+#include "buttonStates.h"
 
 typedef enum {RESTX=0, LEFT, RIGHT} xDirection_t;
 typedef enum {RESTY=0, UP, DOWN} yDirection_t;
-typedef enum {NO_CHANGE=0, RELEASED, PRESSED, LONG_PRESSED} joystickButtonState_t;
 
 void joystickSetup();
 //poll joystick ADC
@@ -30,6 +32,6 @@ xDirection_t getXDirection();
 //Return direction in y-axis
 yDirection_t getYDirection();
 //Return joystick button state
-joystickButtonState_t getJoystickButtonState();
+buttonState_t getJoystickButtonState();
 
 #endif

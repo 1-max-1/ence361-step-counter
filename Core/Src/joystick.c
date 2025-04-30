@@ -7,11 +7,12 @@
  */
 #include <stdint.h>
 #include <stdbool.h>
+
 #include "joystick.h"
 #include "adcTask.h"
+#include "buttonStates.h"
 
 #include "gpio.h"
-
 #include "stm32c0xx_hal.h"
 
 #define NUM_BUT_POLLS 3
@@ -130,7 +131,7 @@ uint16_t getYPower() {
 	return yDirection;
 }
 
- joystickButtonState_t getJoystickButtonState() {
+ buttonState_t getJoystickButtonState() {
 	 if (joystickButton.hasChanged) {
 		 joystickButton.hasChanged = false;
 		 if (joystickButton.state == joystickButton.normalState) {
