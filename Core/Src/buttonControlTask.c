@@ -14,7 +14,7 @@
 #include "rgb.h"
 #include "tim.h"
 #include "pwm.h"
-#include "buzzer.h" // testing buzzer code -- remove
+#include "usartPrintingTask.h"
 
 
 #define DUTY_CYCLE_INCREMENT 10
@@ -44,15 +44,14 @@ void buttonControlTaskExecute() {
 
 	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_DOWN);
+		toggleUsartPrinting();
 	}
 
 	if (buttons_checkButton(LEFT_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_LEFT);
-		buzzer_start(HIGH); //testing buzzer code -- remove
 	}
 
 	if (buttons_checkButton(RIGHT_BUTTON) == PRESSED) {
 		rgb_led_toggle(RGB_RIGHT);
-		buzzer_stop(); //testing buzzer code -- remove
 	}
 }
