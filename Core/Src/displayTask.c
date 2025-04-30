@@ -8,7 +8,7 @@
  */
 
 #include "displayTask.h"
-#include "joystickTask.h"
+#include "joystick.h"
 
 #include "ssd1306_fonts.h"
 #include "ssd1306.h"
@@ -54,32 +54,28 @@ void displayADCValues(uint16_t x, uint16_t y) {
 }
 
 // Show joystick direction and percentage on screen, for x and y axes
-void displayJoystickState(uint16_t x, uint16_t y) {
-	uint16_t xPercentage = 0;
-	uint16_t yPercentage = 0;
-	const char* xString = "Rest";
-	const char* yString = "Rest";
+void displayJoystickState(xDirection_t xDirection, uint16_t xPercentage, yDirection_t yDirection, uint16_t yPercentage) {
+	const char* xString;
+	const char* yString;
 
-	// Calculate direction and percentage
-
-	if (x >= JOYSTICK_LEFT_INNER_VAL) {
+	if (xDirection == LEFT) {
 		xString = "Left";
-		xPercentage = (x - JOYSTICK_LEFT_INNER_VAL) * 100 / (JOYSTICK_LEFT_OUTER_VAL - JOYSTICK_LEFT_INNER_VAL);
-	} else if (x <= JOYSTICK_RIGHT_INNER_VAL) {
+	} else if (xDirection == RIGHT) {
 		xString = "Right";
-		xPercentage = (JOYSTICK_RIGHT_INNER_VAL - x) * 100 / (JOYSTICK_RIGHT_INNER_VAL - JOYSTICK_RIGHT_OUTER_VAL);
+	} else {
+		xString = "Rest";
 	}
 
-	if (y >= JOYSTICK_DOWN_INNER_VAL) {
-		yString = "Down";
-		yPercentage = (y - JOYSTICK_DOWN_INNER_VAL) * 100 / (JOYSTICK_DOWN_OUTER_VAL - JOYSTICK_DOWN_INNER_VAL);
-	} else if (y <= JOYSTICK_UP_INNER_VAL) {
+	if (yDirection == UP) {
 		yString = "Up";
-		yPercentage = (JOYSTICK_UP_INNER_VAL - y) * 100 / (JOYSTICK_UP_INNER_VAL - JOYSTICK_UP_OUTER_VAL);
+	} else if (yDirection == DOWN) {
+		yString = "Down";
+	} else {
+		yString = "Rest";
 	}
 
-	char buf1[18];
-	snprintf(buf1, 18, "X: %s  %u%%   ", xString, xPercentage);
+	char buf1[19];
+	snprintf(buf1, 19, "X: %s  %u%%   ", xString, xPercentage);
 	ssd1306_SetCursor(0, 40);
 	ssd1306_WriteString(buf1, Font_7x10, White);
 
@@ -97,14 +93,18 @@ void sendADCValToUSART(uint16_t x, uint16_t y) {
 }
 
 void displayTaskExecute() {
-	uint16_t x = getX();
-	uint16_t y = getY();
+	uint16_t xRaw = getXRaw();
+	uint16_t yRaw = getYRaw();
+	xDirection_t xDir = getXDirection();
+	yDirection_t yDir = getYDirection();
+	uint16_t xPower = getXPower();
+	uint16_t yPower = getYPower();
 
-	displayADCValues(x, y);
-	displayJoystickState(x, y);
+	displayADCValues(xRaw, yRaw);
+	displayJoystickState(xDir, xPower, yDir, yPower);
 	ssd1306_UpdateScreen();
 
 	if (printJoystickValToUSART) {
-		sendADCValToUSART(x, y);
+		sendADCValToUSART(xRaw, yRaw);
 	}
 }
