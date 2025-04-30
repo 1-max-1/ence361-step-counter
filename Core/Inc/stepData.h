@@ -14,9 +14,9 @@
 #ifndef _STEPDATA_H_
 #define _STEPDATA_H_
 
-typedef enum {KM=0, YD} distanceUnit_t
+typedef enum {KM=0, YD} distanceUnit_t;
 
-typedef enum {PERCENT=0, RATIO} goalUnit_t
+typedef enum {PERCENT=0, RATIO} goalUnit_t;
 
 //initialise stepData
 void stepDataSetup();
