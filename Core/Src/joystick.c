@@ -8,9 +8,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "joystick.h"
+#include "adcTask.h"
 
 #include "gpio.h"
-#include "adc.h"
+
 #include "stm32c0xx_hal.h"
 
 #define NUM_BUT_POLLS 3
@@ -49,7 +50,8 @@ void joystickSetup() {
 }
 
 void joystickExecute() {
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)raw_adc, 2);
+	raw_adc[0] = getJoystickY();
+	raw_adc[1] = getJoystickX();
 
 	GPIO_PinState rawState = HAL_GPIO_ReadPin(joystickButton.port, joystickButton.pin);
 

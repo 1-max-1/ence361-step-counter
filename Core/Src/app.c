@@ -14,6 +14,7 @@
 #include "buttonControlTask.h"
 #include "blinkyTask.h"
 #include "displayTask.h"
+#include "adcTask.h"
 
 #define TICK_FREQUENCY_HZ 1000
 #define HZ_TO_TICKS(FREQUENCY_HZ) (TICK_FREQUENCY_HZ/FREQUENCY_HZ)
@@ -22,12 +23,14 @@
 #define BUTTON_TASK_PERIOD_TICKS HZ_TO_TICKS(100)
 #define JOYSTICK_PERIOD_TICKS HZ_TO_TICKS(150)
 #define DISPLAY_TASK_PERIOD_TICKS HZ_TO_TICKS(4)
+#define ADC_TASK_PERIOD_TICKS HZ_TO_TICKS(150)
 
 // Time (ticks) that the tasks are next scheduled for
 static uint32_t blinkyTaskNextRun = 0;
 static uint32_t buttonControlTaskNextRun = 0;
 static uint32_t joystickNextRun = 0;
 static uint32_t displayTaskNextRun = 0;
+static uint32_t adcTaskNextRun = 0;
 
 void appSetup(void) {
 	buttonControlTaskSetup();
@@ -39,6 +42,7 @@ void appSetup(void) {
 	buttonControlTaskNextRun = HAL_GetTick() + BUTTON_TASK_PERIOD_TICKS;
 	displayTaskNextRun = HAL_GetTick() + DISPLAY_TASK_PERIOD_TICKS;
 	joystickNextRun = HAL_GetTick() + JOYSTICK_PERIOD_TICKS;
+	adcTaskNextRun = HAL_GetTick() + ADC_TASK_PERIOD_TICKS;
 }
 
 void appMain(void) {
@@ -62,5 +66,10 @@ void appMain(void) {
 	if (ticks > displayTaskNextRun) {
 		displayTaskExecute();
 		displayTaskNextRun += DISPLAY_TASK_PERIOD_TICKS;
+	}
+
+	if (ticks > adcTaskNextRun) {
+		adcTaskExecute();
+		adcTaskNextRun += ADC_TASK_PERIOD_TICKS;
 	}
 }
