@@ -2,9 +2,9 @@
  * stepData.h
  *
  * for tracking all data relating to step counter including
- * steps taken, goal, goal percentage, distance travelled
+ * steps taken, goal, goal percentage, distance traveled
  *
- * Author: Alex Pirie
+ * Authors: Alex Pirie, Max Hosking
  *
  */
 
@@ -22,13 +22,17 @@ typedef enum {PERCENT=0, RATIO} goalUnit_t;
 void stepDataSetup();
 //Returns number of steps taken
 uint16_t getSteps();
+// Manually set the number of steps taken
+void setSteps(uint16_t steps);
 //Increments running step count
 void incrementSteps();
 //Updates current goal to newGoal
 void setGoal(uint16_t newGoal);
+// Returns current goal, (number of steps)
+uint16_t getGoal();
 //Returns percentage of goal completed
 uint16_t getGoalPercent();
-//Returns total distance travelled based on set unit
+//Returns total distance traveled based on set unit
 uint16_t getDistance();
 //Returns current unit of distance
 distanceUnit_t getDistanceUnit();
