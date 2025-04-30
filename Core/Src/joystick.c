@@ -141,6 +141,7 @@ uint16_t getYPower() {
 			 return PRESSED;
 		 }
 	 }
+	 return NO_CHANGE;
  }
 
 

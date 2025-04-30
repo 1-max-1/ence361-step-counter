@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#ifndef _STEPDATA_H_
-#define _STEPDATA_H_
+#ifndef _STEP_DATA_H_
+#define _STEP_DATA_H_
 
 typedef enum {KM=0, YD} distanceUnit_t;
 
@@ -38,6 +38,10 @@ goalUnit_t getGoalUnit();
 void toggleDistanceUnit();
 //Toggles goal unit
 void toggleGoalUnit();
+//Updates tentative new goal value
+void setTentativeGoal(uint16_t newTentativeGoal);
+//Returns tentative goal
+uint16_t getTentativeGoal();
 
 
 #endif

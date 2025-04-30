@@ -19,14 +19,15 @@ static uint16_t distanceTravelled;
 static distanceUnit_t distUnit;
 static goalUnit_t goalUnit;
 static uint16_t currentGoal;
+static uint16_t tentativeGoal;
 
 void stepDataSetup() {
 	stepCount = 0;
 	distanceTravelled = 0;
-	goalPercent = 0;
 	distUnit = KM;
 	goalUnit = PERCENT;
 	currentGoal = 1000;
+	tentativeGoal = 1000;
 }
 
 uint16_t getSteps() {
@@ -77,4 +78,12 @@ void toggleGoalUnit() {
 	} else {
 		goalUnit = PERCENT;
 	}
+}
+
+void setTentativeGoal(uint16_t newTentativeGoal) {
+	tentativeGoal = newTentativeGoal;
+}
+
+uint16_t getTentativeGoal() {
+	return tentativeGoal;
 }
