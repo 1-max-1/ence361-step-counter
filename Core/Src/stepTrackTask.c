@@ -9,11 +9,13 @@
 #include "buttons.h"
 #include "buttonStates.h"
 #include "stepData.h"
+#include "stateMachine.h"
 
 #define SW1_STEP_INCREMENT 80
 
 void executeStepTrackTask() {
-	if (buttons_checkButton(UP_BUTTON) == PRESSED) {
+	// Milestone spec says dont allow step increment when in set goal state
+	if (getState() != SET_GOAL && buttons_checkButton(UP_BUTTON) == PRESSED) {
 		setSteps(getSteps() + SW1_STEP_INCREMENT);
 	}
 }
