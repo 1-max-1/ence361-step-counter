@@ -36,6 +36,7 @@ void goalNotificationUpdate() {
 	resetNotificationIfRequired();
 
 	if (!notificationTriggered && getSteps() >= getGoal()) {
+		notificationTriggered = true;
 		buzzer_start(HIGH);
 		setHapticMotorState(true);
 		timeOfBuzzerStart = HAL_GetTick();
