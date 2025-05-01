@@ -19,9 +19,10 @@
 
 static bool notificationTriggered = false;
 static uint32_t timeOfBuzzerStart = 0; // Ticks (ms) when buzzer is first triggered
+static bool buzzerOn = false;
 
 // In milliseconds
-#define NOTIFICATION_DURATION 1200
+#define NOTIFICATION_DURATION 800
 
 // Will clear the flag if the goal changes, so that the notification can be re-triggered again.
 static void resetNotificationIfRequired() {
@@ -37,10 +38,12 @@ void goalNotificationUpdate() {
 
 	if (!notificationTriggered && getSteps() >= getGoal()) {
 		notificationTriggered = true;
+		buzzerOn = true;
 		buzzer_start(HIGH);
 		setHapticMotorState(true);
 		timeOfBuzzerStart = HAL_GetTick();
-	} else if (notificationTriggered && HAL_GetTick() - timeOfBuzzerStart >= NOTIFICATION_DURATION) {
+	} else if (buzzerOn && HAL_GetTick() - timeOfBuzzerStart >= NOTIFICATION_DURATION) {
+		buzzerOn = false;
 		buzzer_stop();
 		setHapticMotorState(false);
 	}
