@@ -11,11 +11,10 @@
 #include <stdint.h>
 #include "stepData.h"
 
-#define STEP_DISTANCE_KM 0.0009
-#define STEP_DISTANCE_YD 0.9843
+#define STEP_DISTANCE_KM 0.0009f
+#define STEP_DISTANCE_YD 0.9843f
 
 static uint16_t stepCount;
-static uint16_t distanceTravelled;
 static distanceUnit_t distUnit;
 static goalUnit_t goalUnit;
 static uint16_t currentGoal;
@@ -23,7 +22,6 @@ static uint16_t tentativeGoal;
 
 void stepDataSetup() {
 	stepCount = 0;
-	distanceTravelled = 0;
 	distUnit = KM;
 	goalUnit = PERCENT;
 	currentGoal = 1000;
@@ -51,12 +49,12 @@ uint16_t getGoal() {
 }
 
 uint16_t getGoalPercent() {
-	uint16_t goalPercent = 0;
-	goalPercent = 100 * stepCount / currentGoal;
+	// Add 0.5 to round
+	uint16_t goalPercent = 100.0f * (float)stepCount / (float)currentGoal + 0.5f;
 	return goalPercent;
 }
 
-uint16_t getDistance() {
+float getDistance() {
 	if (distUnit == KM) {
 		return stepCount * STEP_DISTANCE_KM;
 	} else {

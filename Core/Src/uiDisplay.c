@@ -23,40 +23,50 @@
 #define LONGEST_DATA_STRING 12
 
 // All pages share same basic layout
-void renderGenericLayout(char* title, uint16_t data, char* unit) {
+void renderGenericLayout(char* title, char* dataString) {
 	ssd1306_Fill(Black);
 	ssd1306_SetCursor(0, 10);
 	ssd1306_WriteString(title, Font_7x10, White);
 
-	char buf[LONGEST_DATA_STRING];
-	snprintf(buf, LONGEST_DATA_STRING, "%u %s", data, unit);
 	ssd1306_SetCursor(0, 25);
-	ssd1306_WriteString(buf, Font_7x10, White);
+	ssd1306_WriteString(dataString, Font_7x10, White);
 	ssd1306_UpdateScreen();
+}
+
+void renderGenericLayoutWithInt(char* title, char* dataFormatString, uint16_t data, char* unit) {
+	char buf[LONGEST_DATA_STRING];
+	snprintf(buf, LONGEST_DATA_STRING, dataFormatString, data, unit);
+	renderGenericLayout(title, buf);
+}
+
+void renderGenericLayoutWithFloat(char* title, char* dataFormatString, float data, char* unit) {
+	char buf[LONGEST_DATA_STRING];
+	snprintf(buf, LONGEST_DATA_STRING, dataFormatString, data, unit);
+	renderGenericLayout(title, buf);
 }
 
 void renderGoalPage() {
 	if (getGoalUnit() == PERCENT) {
-		renderGenericLayout("Goal progress:", getGoalPercent(), "%");
+		renderGenericLayoutWithInt("Goal progress:", "%u %s", getGoalPercent(), "%");
 	} else {
 		char ratioBuf[LONGEST_DATA_STRING];
 		snprintf(ratioBuf, LONGEST_DATA_STRING, "/ %u", getGoal());
-		renderGenericLayout("Goal progress:", getSteps() , ratioBuf);
+		renderGenericLayoutWithInt("Goal progress:", "%u %s", getSteps() , ratioBuf);
 	}
 }
 
 void renderStepsTakenPage() {
-	renderGenericLayout("Steps taken:", getSteps(), "steps");
+	renderGenericLayoutWithInt("Steps taken:", "%u %s", getSteps(), "steps");
 }
 
 void renderDistanceTravelledPage() {
 	if (getDistanceUnit() == KM) {
-		renderGenericLayout("Distance traveled:", getDistance(), "km");
+		renderGenericLayoutWithFloat("Distance traveled:", "%0.2f %s", getDistance(), "km");
 	} else {
-		renderGenericLayout("Distance traveled:", getDistance(), "yards");
+		renderGenericLayoutWithFloat("Distance traveled:", "%0.0f %s", getDistance(), "yards");
 	}
 }
 
 void renderGoalChangePage() {
-	renderGenericLayout("New goal:", getTentativeGoal(), "steps");
+	renderGenericLayoutWithInt("New goal:", "%u %s", getTentativeGoal(), "steps");
 }

@@ -33,7 +33,7 @@ uint16_t getGoal();
 //Returns percentage of goal completed
 uint16_t getGoalPercent();
 //Returns total distance traveled based on set unit
-uint16_t getDistance();
+float getDistance();
 //Returns current unit of distance
 distanceUnit_t getDistanceUnit();
 //Returns current goal unit
