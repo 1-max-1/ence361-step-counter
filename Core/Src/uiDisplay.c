@@ -20,7 +20,7 @@
 
 // Number of characters, including null-terminator.
 // Change this if we use longer unit strings or more digits in the data number.
-#define LONGEST_DATA_STRING 12
+#define LONGEST_DATA_STRING 15
 
 // All pages share same basic layout
 void renderGenericLayout(char* title, char* dataString) {
@@ -47,11 +47,13 @@ void renderGenericLayoutWithFloat(char* title, char* dataFormatString, float dat
 
 void renderGoalPage() {
 	if (getGoalUnit() == PERCENT) {
-		renderGenericLayoutWithInt("Goal progress:", "%u %s", getGoalPercent(), "%");
+		char unitString[9];
+		snprintf(unitString, 9, "of %u", getGoal());
+		renderGenericLayoutWithInt("Goal progress:", "%u%% %s", getGoalPercent(), unitString);
 	} else {
-		char ratioBuf[LONGEST_DATA_STRING];
-		snprintf(ratioBuf, LONGEST_DATA_STRING, "/ %u", getGoal());
-		renderGenericLayoutWithInt("Goal progress:", "%u %s", getSteps() , ratioBuf);
+		char unitString[8];
+		snprintf(unitString, 8, "/ %u", getGoal());
+		renderGenericLayoutWithInt("Goal progress:", "%u %s", getSteps() , unitString);
 	}
 }
 
