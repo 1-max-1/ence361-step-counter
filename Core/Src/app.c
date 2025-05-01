@@ -21,6 +21,7 @@
 #include "stepData.h"
 #include "testModeStateLogic.h"
 #include "goalNotification.h"
+#include "stepTrackTask.h"
 
 #define TICK_FREQUENCY_HZ 1000
 #define HZ_TO_TICKS(FREQUENCY_HZ) (TICK_FREQUENCY_HZ/FREQUENCY_HZ)
@@ -33,6 +34,7 @@
 #define LOGIC_TASK_PERIOD_TICKS HZ_TO_TICKS(100)
 #define USART_PRINTING_TASK_PERIOD_TICKS HZ_TO_TICKS(2)
 #define NOTIFICATION_UPDATE_PERIOD_TICKS HZ_TO_TICKS(10)
+#define STEP_TRACK_TASK_PERIOD_TICKS HZ_TO_TICKS(100)
 
 // Time (ticks) that the tasks are next scheduled for
 static uint32_t blinkyTaskNextRun = 0;
@@ -43,6 +45,7 @@ static uint32_t adcTaskNextRun = 0;
 static uint32_t logicTaskNextRun = 0;
 static uint32_t usartPrintingNextRun = 0;
 static uint32_t notificationUpdateNextRun = 0;
+static uint32_t stepTrackTaskNextRun = 0;
 
 void appSetup(void) {
 	blinkyTaskSetup();
@@ -61,6 +64,7 @@ void appSetup(void) {
 	logicTaskNextRun = HAL_GetTick() + LOGIC_TASK_PERIOD_TICKS;
 	usartPrintingNextRun = HAL_GetTick() + USART_PRINTING_TASK_PERIOD_TICKS;
 	notificationUpdateNextRun = HAL_GetTick() + NOTIFICATION_UPDATE_PERIOD_TICKS;
+	stepTrackTaskNextRun = HAL_GetTick() + STEP_TRACK_TASK_PERIOD_TICKS;
 }
 
 void appMain(void) {
@@ -104,5 +108,10 @@ void appMain(void) {
 	if (ticks > notificationUpdateNextRun) {
 		goalNotificationUpdate();
 		notificationUpdateNextRun += NOTIFICATION_UPDATE_PERIOD_TICKS;
+	}
+
+	if (ticks > stepTrackTaskNextRun) {
+		executeStepTrackTask();
+		stepTrackTaskNextRun += STEP_TRACK_TASK_PERIOD_TICKS;
 	}
 }
