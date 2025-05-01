@@ -21,7 +21,7 @@
 #include <stdbool.h>
 
 // Max time in ms between double tap of SW2, to trigger test mode
-#define TEST_MODE_TRIGGER_TIMEOUT 200
+#define TEST_MODE_TRIGGER_TIMEOUT 500
 
 // As a fraction of the current goal
 #define INCREMENT_SPEED_SCALER 450
@@ -66,6 +66,11 @@ void testModeStateLogic() {
 		// The step increment changes based on how much we are pushing the joystick by
 		uint16_t currentGoal = getGoal();
 		int16_t fullIncrement = currentGoal / INCREMENT_SPEED_SCALER;
+		// Dont let increment go below 2, otherwise the scaled increment
+		// can get truncated to 0 if the joystick is not forced hard
+		if (fullIncrement < 2)
+			fullIncrement = 2;
+
 		int16_t scaledIncrement = fullIncrement * getYPower() / 100;
 		if (yDirection == DOWN)
 			scaledIncrement *= -1;
