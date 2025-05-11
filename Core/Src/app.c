@@ -21,9 +21,9 @@
 #include "usartPrintingTask.h"
 #include "stepData.h"
 #include "testModeStateLogic.h"
-#include "goalNotification.h"
 #include "stepTrackTask.h"
 #include "imuStepDetection.h"
+#include "goalProgressIndication.h"
 
 #define TICK_FREQUENCY_HZ 1000
 #define HZ_TO_TICKS(FREQUENCY_HZ) (TICK_FREQUENCY_HZ/FREQUENCY_HZ)
@@ -59,6 +59,7 @@ void appSetup(void) {
 	buttons_init();
 	buzzer_init();
 	initializeIMUStepDetection();
+	setupGoalProgressIndicators();
 
 	blinkyTaskNextRun = HAL_GetTick() + BLINKY_TASK_PERIOD_TICKS;
 	buttonUpdateNextRun = HAL_GetTick() + BUTTON_UPDATE_PERIOD_TICKS;
@@ -111,7 +112,7 @@ void appMain(void) {
 	}
 
 	if (ticks > notificationUpdateNextRun) {
-		goalNotificationUpdate();
+		updateGoalProgressIndicators();
 		notificationUpdateNextRun += NOTIFICATION_UPDATE_PERIOD_TICKS;
 	}
 
