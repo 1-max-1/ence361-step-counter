@@ -28,9 +28,6 @@ static bool buzzerOn = false;
 static void resetNotificationIfRequired() {
 	if (getSteps() < getGoal())
 		notificationTriggered = false;
-
-	// TODO: (maybe) reset flag if goal is lowered but step count still surpasses it.
-	// i.e. buzzer goes again if goal changes.
 }
 
 void goalNotificationUpdate() {

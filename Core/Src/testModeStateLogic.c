@@ -13,7 +13,6 @@
 #include "stateMachine.h"
 #include "joystick.h"
 #include "stepData.h"
-#include "rgb.h"
 
 #include "stm32c0xx_hal.h"
 
@@ -36,15 +35,10 @@ uint32_t startTimeOfTriggerAttempt = 0;
 // True if the user has pressed button once and we still haven't timed out
 bool waitingForSecondPress = false;
 
-void testModeInit() {
-	rgb_colour_on(RGB_BLUE);
-}
-
 void checkForTestModeTrigger() {
 	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
 		if (waitingForSecondPress) {
 			toggleTestMode();
-			rgb_led_toggle(RGB_DOWN);
 		}
 		else {
 			startTimeOfTriggerAttempt = HAL_GetTick();

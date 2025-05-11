@@ -13,23 +13,41 @@
 #include "ssd1306_conf.h"
 #include "ssd1306_fonts.h"
 #include "ssd1306.h"
+
 #include "stepData.h"
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 // Number of characters, including null-terminator.
 // Change this if we use longer unit strings or more digits in the data number.
 #define LONGEST_DATA_STRING 15
 
+void initUIDisplay() {
+	ssd1306_Init();
+}
+
+static bool displayTestModeMessage = false;
+
+void showTestModeMessage(bool enabled) {
+	displayTestModeMessage = enabled;
+}
+
 // All pages share same basic layout
 void renderGenericLayout(char* title, char* dataString) {
 	ssd1306_Fill(Black);
-	ssd1306_SetCursor(0, 10);
-	ssd1306_WriteString(title, Font_7x10, White);
 
-	ssd1306_SetCursor(0, 25);
+	ssd1306_SetCursor(0, 0);
+	ssd1306_WriteString(title, Font_7x10, White);
+	ssd1306_SetCursor(0, 15);
 	ssd1306_WriteString(dataString, Font_7x10, White);
+
+	if (displayTestModeMessage) {
+		ssd1306_SetCursor(0, 48);
+		ssd1306_WriteString("(Test mode on)", Font_6x8, White);
+	}
+
 	ssd1306_UpdateScreen();
 }
 

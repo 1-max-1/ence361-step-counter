@@ -10,13 +10,14 @@
 #include "displayTask.h"
 #include "stateMachine.h"
 #include "uiDisplay.h"
-#include "ssd1306.h"
 
 void displayTaskSetup() {
-	ssd1306_Init();
+	initUIDisplay();
 }
 
 void displayTaskExecute() {
+	showTestModeMessage(isTestModeEnabled());
+
 	state_t currentState = getState();
 	if (currentState == CURRENT_STEPS) {
 		renderStepsTakenPage();

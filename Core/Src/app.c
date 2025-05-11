@@ -57,7 +57,6 @@ void appSetup(void) {
 	displayTaskSetup();
 	stepDataSetup();
 	buttons_init();
-	testModeInit();
 	buzzer_init();
 	initializeIMUStepDetection();
 

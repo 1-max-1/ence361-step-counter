@@ -10,6 +10,11 @@
 #ifndef _UI_DISPLAY_H_
 #define _UI_DISPLAY_H_
 
+#include <stdbool.h>
+
+void initUIDisplay();
+void showTestModeMessage(bool enabled);
+
 void renderGoalPage();
 void renderStepsTakenPage();
 void renderDistanceTravelledPage();
