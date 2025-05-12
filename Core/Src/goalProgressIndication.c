@@ -53,9 +53,8 @@ static void updateLEDs() {
 	uint16_t goalProgress = 100 * getSteps() / getGoal();
 	if (goalProgress > 100) goalProgress = 100;
 
-	uint8_t ds3Brightness = 100 * goalProgress / 25;
+	uint16_t ds3Brightness = 100 * goalProgress / 25;
 	if (ds3Brightness > 100) ds3Brightness = 100;
-	printf("%u%%\r\n", ds3Brightness);
 	rgb_led_set_brightness(RGB_UP, ds3Brightness);
 
 	rgb_led_set_state(RGB_RIGHT, goalProgress >= 50);

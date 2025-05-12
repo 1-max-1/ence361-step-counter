@@ -100,9 +100,7 @@ void rgb_led_set_state(rgb_led_t led, bool enabled) {
 
 void rgb_led_set_brightness(rgb_led_t led, uint8_t brightness) {
 	if (RGB_LEDS[led].pwmEnabled) {
-		uint8_t duty = brightness > 100 ? 100 : brightness;
-		printf("%u\r\n", duty);
-		pwm_setDutyCycle(RGB_LEDS[led].tim, RGB_LEDS[led].timChannel, duty);
+		pwm_setDutyCycle(RGB_LEDS[led].tim, RGB_LEDS[led].timChannel, brightness);
 	}
 }
 
