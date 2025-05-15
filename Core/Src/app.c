@@ -21,8 +21,8 @@
 #include "usartPrintingTask.h"
 #include "stepData.h"
 #include "testModeStateLogic.h"
-#include "goalNotification.h"
 #include "stepTrackTask.h"
+#include "goalProgressIndication.h"
 #include "imu_lsm6ds.h"
 
 #define TICK_FREQUENCY_HZ 1000
@@ -56,6 +56,7 @@ void appSetup(void) {
 	stepDataSetup();
 	buttons_init();
 	buzzer_init();
+	setupGoalProgressIndicators();
 	initializeIMU();
 
 	blinkyTaskNextRun = HAL_GetTick() + BLINKY_TASK_PERIOD_TICKS;
@@ -108,7 +109,7 @@ void appMain(void) {
 	}
 
 	if (ticks > notificationUpdateNextRun) {
-		goalNotificationUpdate();
+		updateGoalProgressIndicators();
 		notificationUpdateNextRun += NOTIFICATION_UPDATE_PERIOD_TICKS;
 	}
 
