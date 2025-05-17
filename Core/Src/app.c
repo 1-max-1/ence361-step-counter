@@ -25,6 +25,7 @@
 #include "goalProgressIndication.h"
 #include "imu_lsm6ds.h"
 #include "taskScheduler.h"
+#include "noiseFiltering.h"
 
 void appSetup(void) {
 	blinkyTaskSetup();
@@ -35,6 +36,7 @@ void appSetup(void) {
 	buzzer_init();
 	setupGoalProgressIndicators();
 	initializeIMU();
+	initializeFilters();
 
 	registerTask(&blinkyTaskExecute, 2);
 	registerTask(&buttons_update, 100);
