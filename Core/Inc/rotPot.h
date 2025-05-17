@@ -12,8 +12,9 @@
 
 #include <stdint.h>
 
-void potentiometerUpdate();
 uint16_t getRawPotVal();
+uint16_t getMaxPotVal();
+uint16_t getMinPotVal();
 uint8_t getPotPercentage();
 
 #endif /* _ROT_POT_H_ */
