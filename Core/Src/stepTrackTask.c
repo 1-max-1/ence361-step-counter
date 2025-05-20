@@ -11,6 +11,7 @@
 #include "buttonStates.h"
 #include "stepData.h"
 #include "stateMachine.h"
+#include "buzzer.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -18,9 +19,79 @@
 
 #define SW1_STEP_INCREMENT 80
 #define LINEAR_SENSITIVITY 0.061
-#define STEP_THRESHOLD 1100000
+#define STEP_THRESHOLD 1080000
 
 static bool stepDetected;
+
+#define AVG_N 300
+#define VAR_N 100
+#define VAR_THRESHOLD 300000000000
+
+static uint32_t mags[VAR_N];
+static uint16_t curIndex = 0;
+static uint32_t mags2[AVG_N];
+static uint16_t curIndex2 = 0;
+static uint64_t sum = 0;
+static uint32_t pastAccelerationMagnitude = 0;
+
+static bool inited = false;
+
+void initStepTrack(uint32_t accelerationMagnitude) {
+	/*int16_t acc_x = getImuXAccel();
+	int16_t acc_y = getImuYAccel();
+	int16_t acc_z = getImuZAccel();
+	uint32_t accelerationMagnitude = acc_x*acc_x + acc_y*acc_y + acc_z*acc_z;*/
+
+	printf("INIT  %lu\r\n", accelerationMagnitude);
+	for (uint16_t i = 0; i < VAR_N; i++) {
+		mags[i] = accelerationMagnitude;
+	}
+	for (uint16_t i = 0; i < AVG_N; i++) {
+		mags2[i] = accelerationMagnitude;
+	}
+}
+
+void steps(uint32_t accelerationMagnitude) {
+	if (!inited) {
+		initStepTrack(accelerationMagnitude);
+		inited = true;
+	}
+
+	//sum += accelerationMagnitude - mags[curIndex];
+	mags[curIndex] = accelerationMagnitude;
+	curIndex++;
+	if (curIndex == VAR_N)
+		curIndex = 0;
+
+	mags2[curIndex2] = accelerationMagnitude;
+	curIndex2++;
+	if (curIndex2 == AVG_N)
+		curIndex2 = 0;
+
+	uint64_t bigSum = 0;
+	for (uint16_t i = 0; i < AVG_N; i++) {
+		bigSum += mags2[i];
+	}
+	uint64_t bigAvg = bigSum / AVG_N;
+
+	sum = 0;
+	for (uint16_t i = 0; i < VAR_N; i++) {
+		sum += mags[i];
+	}
+	uint64_t nvar = 0;
+	uint64_t avg = sum / VAR_N;
+	for (uint16_t i = 0; i < VAR_N; i++) {
+		nvar += (mags[i] - avg) * (mags[i] - avg);
+	}
+	printf("%lu,%llu,%llu\r\n", accelerationMagnitude, bigAvg, nvar);
+
+	if (accelerationMagnitude > bigAvg && pastAccelerationMagnitude <= bigAvg && nvar > VAR_THRESHOLD) {
+		incrementSteps();
+		printf("STEP\r\n");
+	}
+
+	pastAccelerationMagnitude = accelerationMagnitude;
+}
 
 void executeStepTrackTask() {
 
@@ -40,13 +111,18 @@ void executeStepTrackTask() {
 		setSteps(getSteps() + SW1_STEP_INCREMENT);
 	}
 
-	if ((accelerationMagnitude > STEP_THRESHOLD) && !stepDetected) {
+	/*if ((accelerationMagnitude > STEP_THRESHOLD) && !stepDetected) {
 		incrementSteps();
 		stepDetected = true;
-	}
-
-	if ((accelerationMagnitude < STEP_THRESHOLD) && stepDetected) {
+	} else if ((accelerationMagnitude < STEP_THRESHOLD) && stepDetected) {
 		stepDetected = false;
-	}
+	}*/
+
+	steps(accelerationMagnitude);
+
+	if (isStep())
+		buzzer_start(HIGH);
+	else
+		buzzer_stop();
 }
 

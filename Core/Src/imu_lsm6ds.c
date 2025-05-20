@@ -15,6 +15,8 @@
 void initializeIMU() {
 	// Enable accelerometer with high performance
 	imu_lsm6ds_write_byte(CTRL1_XL, CTRL1_XL_HIGH_PERFORMANCE);
+
+	imu_lsm6ds_write_byte(CTRL10_C, 0b0011100);
 }
 
 void imu_lsm6ds_write_byte(imu_register_t register_address, uint8_t value)
@@ -67,4 +69,8 @@ int16_t getImuZAccel() {
 	uint8_t acc_z_high = imu_lsm6ds_read_byte(OUTZ_H_XL);
 	int16_t acc_z = (acc_z_high << 8) | acc_z_low;
 	return acc_z;
+}
+
+bool isStep() {
+	return imu_lsm6ds_read_byte(FUNC_SRC1) & (1 << 4);
 }

@@ -45,9 +45,9 @@ void destroyFilter(uint8_t filterID) {
 
 void initializeFilters() {
 	int16_t imuFilterCoeffs[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-	noiseFilters[0] = createFilter(imuFilterCoeffs, 30, false);
-	noiseFilters[1] = createFilter(imuFilterCoeffs, 30, false);
-	noiseFilters[2] = createFilter(imuFilterCoeffs, 30, false);
+	noiseFilters[0] = createFilter(imuFilterCoeffs, 40, true);
+	noiseFilters[1] = createFilter(imuFilterCoeffs, 40, true);
+	noiseFilters[2] = createFilter(imuFilterCoeffs, 40, true);
 
 	int16_t filter3Coeffs[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 	noiseFilters[3] = createFilter(filter3Coeffs, 15, true);

@@ -37,6 +37,7 @@ void appSetup(void) {
 	setupGoalProgressIndicators();
 	initializeIMU();
 	initializeFilters();
+	//initStepTrack();
 
 	registerTask(&blinkyTaskExecute, 2);
 	registerTask(&buttons_update, 100);

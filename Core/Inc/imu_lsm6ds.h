@@ -9,6 +9,7 @@
 #define INC_IMU_LSM6DS_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef enum {
 	FUNC_CFG_ACCESS = 0x01U,
@@ -123,5 +124,7 @@ int16_t getImuXAccel();
 int16_t getImuYAccel();
 
 int16_t getImuZAccel();
+
+bool isStep();
 
 #endif /* INC_IMU_LSM6DS_H_ */
