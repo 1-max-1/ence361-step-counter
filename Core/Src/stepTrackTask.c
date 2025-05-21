@@ -132,7 +132,7 @@ void executeStepTrackTask() {
 	uint32_t accelerationMagnitude = filteredX*filteredX + filteredY*filteredY + filteredZ*filteredZ;
 
 	// Milestone spec says dont allow step increment when in set goal state
-	if (getState() != SET_GOAL && buttons_checkButton(UP_BUTTON) == PRESSED) {
+	if (getState() != SET_GOAL && buttonsCheckButton(UP_BUTTON) == PRESSED) {
 		setSteps(getSteps() + SW1_STEP_INCREMENT);
 	}
 

@@ -9,7 +9,6 @@
 #ifndef _BLINKY_TASK_H_
 #define _BLINKY_TASK_H_
 
-void blinkyTaskSetup();
 void blinkyTaskExecute();
 
 #endif

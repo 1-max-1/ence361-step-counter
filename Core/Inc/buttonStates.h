@@ -4,7 +4,7 @@
  *  Created on: Apr 30, 2025
  *      Author: Max Hosking
  *
- *  Contains enum for button states
+ *  Contains enumeration for button states
  */
 
 #ifndef _BUTTON_STATES_H_

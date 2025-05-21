@@ -20,7 +20,7 @@
 #define POT_MAX 4095
 
 uint16_t getRawPotVal() {
-	uint16_t rawVal = adcTask_getRotPot();
+	uint16_t rawVal = adcTaskGetRotPot();
 	// rawVal will never go over POT_MAX (4095) so can safely cast to int16_t
 	int16_t val = filterValue((int16_t)rawVal, 3);
 	return val;

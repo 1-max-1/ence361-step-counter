@@ -12,6 +12,7 @@
 
 #include <stdbool.h>
 
+// Enables or disables the haptic motor
 void setHapticMotorState(bool state);
 
-#endif /* INC_HAPTICFEEDBACK_H_ */
+#endif /* _HAPTIC_FEEDBACK_H_ */

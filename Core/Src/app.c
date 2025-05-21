@@ -1,12 +1,14 @@
 /**
- * app.c
+ * app.h
  *
  * Authors: Max Hosking, Alex Pirie
  *
- * The app module is the highest level module and handles task scheduling.
+ * The app module is the highest level module.
+ * It initializes tasks and specifies the frequency of tasks.
  */
 
 
+#include <goalProgressIndicationTask.h>
 #include <stdint.h>
 
 #include "gpio.h"
@@ -14,39 +16,41 @@
 #include "joystick.h"
 #include "buzzer.h"
 #include "buttons.h"
-#include "blinkyTask.h"
 #include "displayTask.h"
 #include "adcTask.h"
 #include "stateLogicTask.h"
+#include "blinkyTask.h"
 #include "usartPrintingTask.h"
 #include "stepData.h"
 #include "testModeStateLogic.h"
 #include "stepTrackTask.h"
-#include "goalProgressIndication.h"
 #include "imu_lsm6ds.h"
 #include "taskScheduler.h"
 #include "noiseFiltering.h"
 
 void appSetup(void) {
-	blinkyTaskSetup();
+	// Hardware
 	joystickInit();
-	displayTaskSetup();
-	stepDataInit();
-	buttons_init();
+	buttonsInit();
 	buzzerInit();
-	setupGoalProgressIndicators();
 	imuInit();
+
+	// Tasks
+	displayTaskSetup();
+	goalProgressIndicationInit();
+
+	// Other modules
+	stepDataInit();
 	filtersInit();
-	//initStepTrack();
 
 	registerTask(&blinkyTaskExecute, 2);
-	registerTask(&buttons_update, 100);
+	registerTask(&buttonsUpdate, 100);
 	registerTask(&joystickUpdate, 100);
 	registerTask(&displayTaskExecute, 8);
 	registerTask(&adcTaskUpdate, 150);
 	registerTask(&executeStateLogicTask, 100);
 	//registerTask(&usartPrintingExecute, 2);
-	registerTask(&updateGoalProgressIndicators, 10);
+	registerTask(&goalProgressIndicationUpdate, 10);
 	registerTask(&executeStepTrackTask, 100);
 }
 

@@ -1,5 +1,5 @@
 /*
- * testModeStateLogic.h
+ * testModeStateLogic.c
  *
  *  Created on: Apr 30, 2025
  *      Author: Max Hosking
@@ -22,7 +22,8 @@
 // Max time in ms between double tap of SW2, to trigger test mode
 #define TEST_MODE_TRIGGER_TIMEOUT 500
 
-// As a fraction of the current goal
+// The step change increment is linearly related to the current goal.
+// Higher goals will make it increment faster. This is the scaling factor.
 #define INCREMENT_SPEED_SCALER 450
 
 /**
@@ -36,7 +37,8 @@ uint32_t startTimeOfTriggerAttempt = 0;
 bool waitingForSecondPress = false;
 
 void checkForTestModeTrigger() {
-	if (buttons_checkButton(DOWN_BUTTON) == PRESSED) {
+	if (buttonsCheckButton(DOWN_BUTTON) == PRESSED) {
+		// We were waiting so this must be the 2nd (final) press
 		if (waitingForSecondPress) {
 			toggleTestMode();
 		}
@@ -55,27 +57,27 @@ void checkForTestModeTrigger() {
 void testModeStateLogic() {
 	// Only increment step if the joystick is not at rest
 	yDirection_t yDirection = getYDirection();
-	if (yDirection != RESTY) {
+	if (yDirection == RESTY)
+		return;
 
-		// The step increment changes based on how much we are pushing the joystick by
-		uint16_t currentGoal = getGoal();
-		int16_t fullIncrement = currentGoal / INCREMENT_SPEED_SCALER;
-		// Dont let increment go below 2, otherwise the scaled increment
-		// can get truncated to 0 if the joystick is not forced hard
-		if (fullIncrement < 2)
-			fullIncrement = 2;
+	// The step increment changes based on how much we are pushing the joystick by
+	uint16_t currentGoal = getGoal();
+	int16_t fullIncrement = currentGoal / INCREMENT_SPEED_SCALER;
+	// Dont let increment go below 2, otherwise the scaled increment (see below)
+	// can get truncated to 0 (integer math) if the joystick y-power is not 100% (which it usually isn't)
+	if (fullIncrement < 2)
+		fullIncrement = 2;
 
-		int16_t scaledIncrement = fullIncrement * getYPower() / 100;
-		if (yDirection == DOWN)
-			scaledIncrement *= -1;
+	int16_t scaledIncrement = fullIncrement * getYPower() / 100;
+	if (yDirection == DOWN)
+		scaledIncrement *= -1;
 
-		// In test mode we cannot go past the goal (as per spec M2.3)
-		int16_t newStepCount = getSteps() + scaledIncrement;
-		if (newStepCount < 0)
-			newStepCount = 0;
-		else if (newStepCount > currentGoal)
-			newStepCount = currentGoal;
+	// In test mode we cannot go past the current goal (as per spec M2.3)
+	int16_t newStepCount = getSteps() + scaledIncrement;
+	if (newStepCount < 0)
+		newStepCount = 0;
+	else if (newStepCount > currentGoal)
+		newStepCount = currentGoal;
 
-		setSteps(newStepCount);
-	}
+	setSteps(newStepCount);
 }

@@ -6,18 +6,19 @@
  * Author: Alex Pirie
  *
  */
-#include <stdint.h>
+
+#include "currentStepsStateLogic.h"
 #include "joystick.h"
 #include "stepData.h"
 #include "stateMachine.h"
-#include "currentStepsStateLogic.h"
 
 #include <stdbool.h>
+#include <stdint.h>
 
-#define STATE_SWITCH_THRESHOLD 70 //percent
+#define STATE_SWITCH_THRESHOLD 70 // percent
 
 // Use this so that the sideways joystick action from the previous state has no effect on this state.
-// We will only be able to get out of this state once the user has let go of the joystick.
+// We will only be able to get out of this state once the user has released and re-pushed the joystick.
 static bool canExitState = false;
 
 static void checkForStateChange() {
@@ -33,6 +34,7 @@ static void checkForStateChange() {
 }
 
 void currentStepsStateLogic() {
+	// Don't allow state to keep changing while joystick held
 	if (canExitState) {
 		checkForStateChange();
 	} else if (getXDirection() == RESTX) {

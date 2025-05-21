@@ -1,15 +1,13 @@
 // *******************************************************
-// 
-// buttons.c
-//
+// buttons.h
 //
 // Support for a set of FOUR specific buttons on the NUCLEO boards.
 // ENCE361 sample code.
-// The buttons are UP/DOWN/LEFT/RIGHT.
+// The buttons are UP and DOWN plus LEFT and RIGHT.
 //
 // Created by P.J. Bones, UC ECE
-// Updated by Le Yang & F. Youssif, UC ECE.
-// Last modified:  15/01/2025
+// Updated by Le Yang & F. Youssif, UC ECE
+// Further modified by Max Hosking, Alex Pirie
 // 
 // *******************************************************
 
@@ -20,6 +18,7 @@
 #include "buttonStates.h"
 #include "stm32c0xx_hal.h"
 
+// Number of successive same value before button is considered in a new state
 #define NUM_BUT_POLLS 3
 
 // *******************************************************
@@ -73,7 +72,7 @@ buttonProperties_t buttons[NUM_BUTTONS] =
 
 // *******************************************************
 // buttons_init: Initialise the variables associated with the set of buttons.
-void buttons_init (void)
+void buttonsInit (void)
 {
 	for (int i = 0; i < NUM_BUTTONS; i++)
 	{
@@ -92,7 +91,7 @@ void buttons_init (void)
 // A state change can be declared only after NUM_BUT_POLLS consecutive polls have
 // read the pin in the opposite condition, before the state changes and
 // a flag is set. Set NUM_BUT_POLLS according to the polling rate.
-void buttons_update (void)
+void buttonsUpdate (void)
 {
 	// Iterate through the buttons, updating button variables as required
 	for (int i = 0; i < NUM_BUTTONS; i++)
@@ -109,7 +108,7 @@ void buttons_update (void)
         	if (buttons[i].newStateCount >= NUM_BUT_POLLS)
         	{
         		buttons[i].state = rawState;
-        		buttons[i].hasChanged = true;	// Reset by call to buttons_checkButton()
+        		buttons[i].hasChanged = true;	// Reset by call to buttonsCheckButton()
         		buttons[i].newStateCount = 0;
         	}
         }
@@ -121,10 +120,10 @@ void buttons_update (void)
 }
 
 // *******************************************************
-// buttons_checkButton: Function returns the new button logical state if the button
+// buttonsCheckButton: Function returns the new button logical state if the button
 // logical state (PUSHED or RELEASED) has changed since the last call,
 // otherwise returns NO_CHANGE.
-buttonState_t buttons_checkButton (buttonName_t butName)
+buttonState_t buttonsCheckButton (buttonName_t butName)
 {
 	if (buttons[butName].hasChanged)
 	{

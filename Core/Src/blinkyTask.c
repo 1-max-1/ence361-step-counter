@@ -10,10 +10,6 @@
 
 #include "gpio.h"
 
-void blinkyTaskSetup() {
-	; // No setup here
-}
-
 void blinkyTaskExecute() {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 }

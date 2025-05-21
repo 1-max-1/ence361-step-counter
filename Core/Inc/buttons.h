@@ -1,5 +1,5 @@
-#ifndef BUTTONS_H_
-#define BUTTONS_H_
+#ifndef _BUTTONS_H_
+#define _BUTTONS_H_
 
 // *******************************************************
 // buttons.h
@@ -30,22 +30,22 @@ typedef enum butNames {UP_BUTTON = 0, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, NU
 // a flag is set. Set NUM_BUT_POLLS according to the polling rate.
 
 // *******************************************************
-// buttons_init: Initialize the variables associated with the set of buttons
+// buttonsInit: Initialize the variables associated with the set of buttons
 // defined by the constants above.
-void buttons_init (void);
+void buttonsInit (void);
 
 // *******************************************************
-// buttons_update: Function designed to be called regularly. It polls all
+// buttonsUpdate: Function designed to be called regularly. It polls all
 // buttons once and updates variables associated with the buttons if
 // necessary. It is efficient enough to be part of an ISR for e.g.,
 // a SysTick interrupt.
-void buttons_update (void);
+void buttonsUpdate (void);
 
 // *******************************************************
-// buttons_checkButton: Function returns the new button state if the button state
+// buttonsCheckButton: Function returns the new button state if the button state
 // (PUSHED or RELEASED) has changed since the last call, otherwise returns
 // NO_CHANGE. The argument butName should be one of constants in the
 // enumeration butStates, excluding 'NUM_BUTS'. Safe under interrupt.
-buttonState_t buttons_checkButton (buttonName_t butName);
+buttonState_t buttonsCheckButton (buttonName_t butName);
 
-#endif /*BUTTONS_H_*/
+#endif /* _BUTTONS_H_ */

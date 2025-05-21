@@ -3,8 +3,8 @@
  *
  *  Authors: Alex Pirie
  *
- *  This task handles displaying the pages for each state of the step counter
- *  based on the state of the program determined in the state machine
+ *  This task handles choosing the currently displayed UI page based on
+ *  the state of the program determined in the state machine
  */
 
 #ifndef _DISPLAY_TASK_H_
