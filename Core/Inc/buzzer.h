@@ -1,13 +1,16 @@
 #ifndef _BUZZER_H
 #define _BUZZER_H
 
-
+//varies volume of buzzer
 typedef enum pitch {LOW = 0, HIGH} buzzerPitch_t;
 
-void buzzer_init();
+//initialise buzzer
+void buzzerInit();
 
-void buzzer_start(buzzerPitch_t pitch);
+//start buzzer either HIGH or LOW
+void buzzerStart(buzzerPitch_t pitch);
 
-void buzzer_stop();
+//stop buzzer
+void buzzerStop();
 
 #endif

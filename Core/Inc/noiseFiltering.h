@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // Will initialize all filters and assign the memory needed for them
-void initializeFilters();
+void filtersInit();
 
 // Call to process a value. The new filter average will be computed and returned.
 int16_t filterValue(int16_t processValue, uint8_t filterID);

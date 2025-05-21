@@ -43,7 +43,7 @@ void destroyFilter(uint8_t filterID) {
 	filter->tapValues = NULL;
 }
 
-void initializeFilters() {
+void filtersInit() {
 	int16_t imuFilterCoeffs[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 	noiseFilters[0] = createFilter(imuFilterCoeffs, 40, true);
 	noiseFilters[1] = createFilter(imuFilterCoeffs, 40, true);

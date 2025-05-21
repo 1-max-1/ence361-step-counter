@@ -29,21 +29,21 @@
 
 void appSetup(void) {
 	blinkyTaskSetup();
-	joystickSetup();
+	joystickInit();
 	displayTaskSetup();
-	stepDataSetup();
+	stepDataInit();
 	buttons_init();
-	buzzer_init();
+	buzzerInit();
 	setupGoalProgressIndicators();
-	initializeIMU();
-	initializeFilters();
+	imuInit();
+	filtersInit();
 	//initStepTrack();
 
 	registerTask(&blinkyTaskExecute, 2);
 	registerTask(&buttons_update, 100);
 	registerTask(&joystickUpdate, 100);
 	registerTask(&displayTaskExecute, 8);
-	registerTask(&adcTaskExecute, 150);
+	registerTask(&adcTaskUpdate, 150);
 	registerTask(&executeStateLogicTask, 100);
 	//registerTask(&usartPrintingExecute, 2);
 	registerTask(&updateGoalProgressIndicators, 10);

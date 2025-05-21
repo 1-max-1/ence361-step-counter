@@ -106,25 +106,29 @@ typedef enum {
 	X_OFS_USR = 0x73U,
 	Y_OFS_USR,
 	Z_OFS_USR
-} imu_register_t;
+} imu_register_t; //register locations for imu init
 
 // Standard options
 #define CTRL1_XL_HIGH_PERFORMANCE 0xA0U
 #define CTRL2_G_HIGH_PERFORMANCE 0xA0U
 #define CTRL10_C_ENABLE_PEDO 0x14U
 
-void initializeIMU();
+void imuInit();
 
 void imu_lsm6ds_write_byte(imu_register_t register_address, uint8_t value);
 
 uint8_t imu_lsm6ds_read_byte(imu_register_t register_address);
 
+//returns imu x-axis acceleration
 int16_t getImuXAccel();
 
+//returns imu y-axis acceleration
 int16_t getImuYAccel();
 
+//returns imu z-axis acceleration
 int16_t getImuZAccel();
 
+//testing imu prebuilt step detection (NOT IN USE FOR FINAL TESTING)
 bool isStep();
 
 #endif /* INC_IMU_LSM6DS_H_ */

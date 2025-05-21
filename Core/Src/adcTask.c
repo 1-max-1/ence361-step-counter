@@ -10,8 +10,8 @@
 
 static uint16_t raw_adc[3];
 
-void adcTaskExecute() {
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)raw_adc, 3);
+void adcTaskUpdate() {
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)raw_adc, 3); //adc values are a register for the configured devices; this updates the register
 }
 
 uint16_t adcTask_getRotPot() {

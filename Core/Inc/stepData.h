@@ -19,7 +19,7 @@ typedef enum {KM=0, YD} distanceUnit_t;
 typedef enum {PERCENT=0, RATIO} goalUnit_t;
 
 //initialise stepData
-void stepDataSetup();
+void stepDataInit();
 //Returns number of steps taken
 uint16_t getSteps();
 // Manually set the number of steps taken

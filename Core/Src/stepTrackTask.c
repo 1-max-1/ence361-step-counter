@@ -146,8 +146,8 @@ void executeStepTrackTask() {
 	steps(accelerationMagnitude);
 
 	/*if (isStep())
-		buzzer_start(HIGH);
+		buzzerStart(HIGH);
 	else
-		buzzer_stop();*/
+		buzzerStop();*/
 }
 

@@ -15,6 +15,8 @@
 #include "gpio.h"
 #include "stm32c0xx_hal.h"
 
+
+//parameters needed for the specific joystick mounted to the racp board
 #define NUM_BUT_POLLS 3
 #define BUT_POLL_HZ 100
 #define JOYSTICK_LEFT_OUTER_VAL 4045
@@ -44,7 +46,7 @@ static uint16_t raw_adc[2];
 
 joystickButtonProperties_t joystickButton;
 
-void joystickSetup() {
+void joystickInit() {
 	joystickButton.port = GPIOB;
 	joystickButton.pin = GPIO_PIN_1;
 	joystickButton.normalState = GPIO_PIN_RESET;
@@ -90,7 +92,7 @@ uint16_t getYRaw() {
 
 uint16_t getXPower() {
 	uint16_t xPercentage = 0;
-
+	//gives joystick x-axis displacement as percantage for usage with a threshold, no direction
 	if (raw_adc[1] >= JOYSTICK_LEFT_INNER_VAL) {
 		xPercentage = (raw_adc[1] - JOYSTICK_LEFT_INNER_VAL) * 100 / (JOYSTICK_LEFT_OUTER_VAL - JOYSTICK_LEFT_INNER_VAL);
 	} else if (raw_adc[1] <= JOYSTICK_RIGHT_INNER_VAL) {
@@ -101,7 +103,7 @@ uint16_t getXPower() {
 
 uint16_t getYPower() {
 	uint16_t yPercentage = 0;
-
+	//gives joystick y-axis displacement as percantage for usage with a threshold, no direction
 	if (raw_adc[0] >= JOYSTICK_DOWN_INNER_VAL) {
 		yPercentage = (raw_adc[0] - JOYSTICK_DOWN_INNER_VAL) * 100 / (JOYSTICK_DOWN_OUTER_VAL - JOYSTICK_DOWN_INNER_VAL);
 	} else if (raw_adc[0] <= JOYSTICK_UP_INNER_VAL) {
@@ -112,7 +114,7 @@ uint16_t getYPower() {
 
  xDirection_t getXDirection() {
 	 xDirection_t xDirection = RESTX;
-
+	 //allows directionality when using the xPower() function
 	if (raw_adc[1] >= JOYSTICK_LEFT_INNER_VAL) {
 		xDirection = LEFT;
 	} else if (raw_adc[1] <= JOYSTICK_RIGHT_INNER_VAL) {
@@ -123,7 +125,7 @@ uint16_t getYPower() {
 
  yDirection_t getYDirection() {
 	 yDirection_t yDirection = RESTY;
-
+	 //allows for directionality with the yPower() function
 	if (raw_adc[0] >= JOYSTICK_DOWN_INNER_VAL) {
 		yDirection = DOWN;
 	} else if (raw_adc[0] <= JOYSTICK_UP_INNER_VAL) {

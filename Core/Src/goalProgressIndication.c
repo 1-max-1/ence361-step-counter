@@ -39,12 +39,12 @@ static void updateBuzzerNotification() {
 	if (!notificationTriggered && getSteps() >= getGoal()) {
 		notificationTriggered = true;
 		buzzerOn = true;
-		buzzer_start(HIGH);
+		buzzerStart(HIGH);
 		setHapticMotorState(true);
 		timeOfBuzzerStart = HAL_GetTick();
 	} else if (buzzerOn && HAL_GetTick() - timeOfBuzzerStart >= NOTIFICATION_DURATION) {
 		buzzerOn = false;
-		buzzer_stop();
+		buzzerStop();
 		setHapticMotorState(false);
 	}
 }
