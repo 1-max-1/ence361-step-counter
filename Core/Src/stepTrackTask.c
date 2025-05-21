@@ -12,6 +12,7 @@
 #include "stepData.h"
 #include "stateMachine.h"
 #include "buzzer.h"
+#include "stm32c0xx_hal.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -24,8 +25,8 @@
 static bool stepDetected;
 
 #define AVG_N 300
-#define VAR_N 100
 #define VAR_THRESHOLD 300000000000
+#define VAR_N 50
 
 static uint32_t mags[VAR_N];
 static uint16_t curIndex = 0;
@@ -81,13 +82,15 @@ void steps(uint32_t accelerationMagnitude) {
 	uint64_t nvar = 0;
 	uint64_t avg = sum / VAR_N;
 	for (uint16_t i = 0; i < VAR_N; i++) {
-		nvar += (mags[i] - avg) * (mags[i] - avg);
+		nvar += (mags[i] - bigAvg) * (mags[i] - bigAvg);
 	}
-	printf("%lu,%llu,%llu\r\n", accelerationMagnitude, bigAvg, nvar);
+
+	uint32_t tickVal = HAL_GetTick();
+	printf("%lu,%llu,%llu,%lu\r\n", accelerationMagnitude, bigAvg, nvar, tickVal);
 
 	if (accelerationMagnitude > bigAvg && pastAccelerationMagnitude <= bigAvg && nvar > VAR_THRESHOLD) {
 		incrementSteps();
-		printf("STEP\r\n");
+		printf("STEP,%lu\r\n", tickVal);
 	}
 
 	pastAccelerationMagnitude = accelerationMagnitude;
