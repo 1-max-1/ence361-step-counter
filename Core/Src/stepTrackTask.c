@@ -24,9 +24,11 @@
 
 static bool stepDetected;
 
-#define AVG_N 300
-#define VAR_THRESHOLD 300000000000
+#define AVG_N 100
+#define VAR_THRESHOLD 35000000000
 #define VAR_N 50
+#define MIN_STEP_PERIOD 300 // min time between step detections (ms)
+#define MIN_PEAK_DIFF 40000
 
 static uint32_t mags[VAR_N];
 static uint16_t curIndex = 0;
@@ -34,6 +36,9 @@ static uint32_t mags2[AVG_N];
 static uint16_t curIndex2 = 0;
 static uint64_t sum = 0;
 static uint32_t pastAccelerationMagnitude = 0;
+static uint64_t pastAverage = 0;
+static uint32_t timeOfLastStep = 0;
+static uint32_t lastPeak = 0;
 
 static bool inited = false;
 
@@ -43,7 +48,7 @@ void initStepTrack(uint32_t accelerationMagnitude) {
 	int16_t acc_z = getImuZAccel();
 	uint32_t accelerationMagnitude = acc_x*acc_x + acc_y*acc_y + acc_z*acc_z;*/
 
-	printf("INIT  %lu\r\n", accelerationMagnitude);
+	//printf("INIT  %lu\r\n", accelerationMagnitude);
 	for (uint16_t i = 0; i < VAR_N; i++) {
 		mags[i] = accelerationMagnitude;
 	}
@@ -82,22 +87,39 @@ void steps(uint32_t accelerationMagnitude) {
 	uint64_t nvar = 0;
 	uint64_t avg = sum / VAR_N;
 	for (uint16_t i = 0; i < VAR_N; i++) {
-		nvar += (mags[i] - bigAvg) * (mags[i] - bigAvg);
+		uint32_t diff = 0;
+		if (mags[i] > bigAvg)
+			diff = mags[i] - bigAvg;
+		else
+			diff = bigAvg - mags[i];
+
+		uint64_t squared = diff * diff;
+		nvar += squared;
 	}
 
 	uint32_t tickVal = HAL_GetTick();
 	printf("%lu,%llu,%llu,%lu\r\n", accelerationMagnitude, bigAvg, nvar, tickVal);
 
-	if (accelerationMagnitude > bigAvg && pastAccelerationMagnitude <= bigAvg && nvar > VAR_THRESHOLD) {
+	if (accelerationMagnitude < bigAvg && pastAccelerationMagnitude >= pastAverage) {
+		printf("CROSSING,%lu,%llu\r\n", tickVal, nvar);
+	}
+
+	if (accelerationMagnitude > lastPeak) {
+		lastPeak = accelerationMagnitude;
+	}
+
+	if (accelerationMagnitude <= pastAccelerationMagnitude && accelerationMagnitude < bigAvg && pastAccelerationMagnitude >= pastAverage && nvar > VAR_THRESHOLD && tickVal - timeOfLastStep >= MIN_STEP_PERIOD && lastPeak - accelerationMagnitude >= MIN_PEAK_DIFF) {
 		incrementSteps();
+		timeOfLastStep = tickVal;
+		lastPeak = 0;
 		printf("STEP,%lu\r\n", tickVal);
 	}
 
 	pastAccelerationMagnitude = accelerationMagnitude;
+	pastAverage = bigAvg;
 }
 
 void executeStepTrackTask() {
-
 	int16_t acc_x = getImuXAccel();
 	int16_t acc_y = getImuYAccel();
 	int16_t acc_z = getImuZAccel();
@@ -123,9 +145,9 @@ void executeStepTrackTask() {
 
 	steps(accelerationMagnitude);
 
-	if (isStep())
+	/*if (isStep())
 		buzzer_start(HIGH);
 	else
-		buzzer_stop();
+		buzzer_stop();*/
 }
 

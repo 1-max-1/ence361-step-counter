@@ -45,7 +45,7 @@ void appSetup(void) {
 	registerTask(&displayTaskExecute, 8);
 	registerTask(&adcTaskExecute, 150);
 	registerTask(&executeStateLogicTask, 100);
-	registerTask(&usartPrintingExecute, 2);
+	//registerTask(&usartPrintingExecute, 2);
 	registerTask(&updateGoalProgressIndicators, 10);
 	registerTask(&executeStepTrackTask, 100);
 }
