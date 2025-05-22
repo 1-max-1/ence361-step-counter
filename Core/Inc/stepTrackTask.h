@@ -8,6 +8,5 @@
 #define _STEP_TRACK_TASK_H_
 
 void executeStepTrackTask();
-void initStepTrack(uint32_t accelerationMagnitude);
 
 #endif // _STEP_TRACK_TASK_H_

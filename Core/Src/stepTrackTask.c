@@ -1,17 +1,16 @@
 /**
- * stepTrackTask.h
+ * stepTrackTask.c
  *
  * This task handles step increments from SW1 and the IMU. High level.
  */
 
+#include "stepTrackTask.h"
 #include "noiseFiltering.h"
 #include "imu_lsm6ds.h"
-#include "stepTrackTask.h"
 #include "buttons.h"
 #include "buttonStates.h"
 #include "stepData.h"
 #include "stateMachine.h"
-#include "buzzer.h"
 #include "stm32c0xx_hal.h"
 
 #include <stdint.h>
@@ -19,135 +18,124 @@
 #include <stdbool.h>
 
 #define SW1_STEP_INCREMENT 80
-#define LINEAR_SENSITIVITY 0.061
-#define STEP_THRESHOLD 1080000
+#define LINEAR_SENSITIVITY 0.061 // Converts IMU reading to mg-value
 
-static bool stepDetected;
+// Define 2 different sized circular buffers. The large one is used for calculating longer-term average,
+// while the short buffer is used for more accurately detecting peaks by calculating short term variance.
+#define BIG_BUFFER_SIZE 100
+#define SMALL_BUFFER_SIZE 50
+static uint32_t smallBuffer[SMALL_BUFFER_SIZE];
+static uint32_t largeBuffer[BIG_BUFFER_SIZE];
+static uint16_t smallBufIndex = 0;
+static uint16_t largeBufIndex = 0;
 
-#define AVG_N 100
-#define VAR_THRESHOLD 35000000000
-#define VAR_N 50
+#define VAR_THRESHOLD 35000000000 // Variance must be above this to turn on step detection
 #define MIN_STEP_PERIOD 300 // min time between step detections (ms)
-#define MIN_PEAK_DIFF 40000
+#define MIN_PEAK_DIFF 40000 // Will not detect a step if peak didn't reach at least this high above the average
 
-static uint32_t mags[VAR_N];
-static uint16_t curIndex = 0;
-static uint32_t mags2[AVG_N];
-static uint16_t curIndex2 = 0;
-static uint64_t sum = 0;
-static uint32_t pastAccelerationMagnitude = 0;
-static uint64_t pastAverage = 0;
+// What the values were last task execution
+static uint32_t lastAccelerationMagnitude = 0;
+static uint64_t lastAverage = 0;
 static uint32_t timeOfLastStep = 0;
+
+// Highest value recorded since detecting a step. Resets once step is detected
 static uint32_t lastPeak = 0;
 
-static bool inited = false;
+// Set to true once they have been filled with first value
+static bool buffersInitialized = false;
 
-void initStepTrack(uint32_t accelerationMagnitude) {
-	/*int16_t acc_x = getImuXAccel();
-	int16_t acc_y = getImuYAccel();
-	int16_t acc_z = getImuZAccel();
-	uint32_t accelerationMagnitude = acc_x*acc_x + acc_y*acc_y + acc_z*acc_z;*/
-
-	//printf("INIT  %lu\r\n", accelerationMagnitude);
-	for (uint16_t i = 0; i < VAR_N; i++) {
-		mags[i] = accelerationMagnitude;
+// Fills both buffers with the given magnitude. Useful for initialization
+void fillBuffers(uint32_t accelerationMagnitude) {
+	for (uint16_t i = 0; i < SMALL_BUFFER_SIZE; i++) {
+		smallBuffer[i] = accelerationMagnitude;
 	}
-	for (uint16_t i = 0; i < AVG_N; i++) {
-		mags2[i] = accelerationMagnitude;
+	for (uint16_t i = 0; i < BIG_BUFFER_SIZE; i++) {
+		largeBuffer[i] = accelerationMagnitude;
 	}
 }
 
-void steps(uint32_t accelerationMagnitude) {
-	if (!inited) {
-		initStepTrack(accelerationMagnitude);
-		inited = true;
+void updateBuffers(uint32_t accelerationMagnitude) {
+	// To avoid a magnitude spike on boot, start buffers with all same value
+	if (!buffersInitialized) {
+		fillBuffers(accelerationMagnitude);
+		buffersInitialized = true;
 	}
 
-	//sum += accelerationMagnitude - mags[curIndex];
-	mags[curIndex] = accelerationMagnitude;
-	curIndex++;
-	if (curIndex == VAR_N)
-		curIndex = 0;
+	smallBuffer[smallBufIndex] = accelerationMagnitude;
+	smallBufIndex++;
+	if (smallBufIndex == SMALL_BUFFER_SIZE)
+		smallBufIndex = 0;
 
-	mags2[curIndex2] = accelerationMagnitude;
-	curIndex2++;
-	if (curIndex2 == AVG_N)
-		curIndex2 = 0;
-
-	uint64_t bigSum = 0;
-	for (uint16_t i = 0; i < AVG_N; i++) {
-		bigSum += mags2[i];
-	}
-	uint64_t bigAvg = bigSum / AVG_N;
-
-	sum = 0;
-	for (uint16_t i = 0; i < VAR_N; i++) {
-		sum += mags[i];
-	}
-	uint64_t nvar = 0;
-	uint64_t avg = sum / VAR_N;
-	for (uint16_t i = 0; i < VAR_N; i++) {
-		uint32_t diff = 0;
-		if (mags[i] > bigAvg)
-			diff = mags[i] - bigAvg;
-		else
-			diff = bigAvg - mags[i];
-
-		uint64_t squared = diff * diff;
-		nvar += squared;
-	}
-
-	uint32_t tickVal = HAL_GetTick();
-	printf("%lu,%llu,%llu,%lu\r\n", accelerationMagnitude, bigAvg, nvar, tickVal);
-
-	if (accelerationMagnitude < bigAvg && pastAccelerationMagnitude >= pastAverage) {
-		printf("CROSSING,%lu,%llu\r\n", tickVal, nvar);
-	}
-
-	if (accelerationMagnitude > lastPeak) {
-		lastPeak = accelerationMagnitude;
-	}
-
-	if (accelerationMagnitude <= pastAccelerationMagnitude && accelerationMagnitude < bigAvg && pastAccelerationMagnitude >= pastAverage && nvar > VAR_THRESHOLD && tickVal - timeOfLastStep >= MIN_STEP_PERIOD && lastPeak - accelerationMagnitude >= MIN_PEAK_DIFF) {
-		incrementSteps();
-		timeOfLastStep = tickVal;
-		lastPeak = 0;
-		printf("STEP,%lu\r\n", tickVal);
-	}
-
-	pastAccelerationMagnitude = accelerationMagnitude;
-	pastAverage = bigAvg;
+	largeBuffer[largeBufIndex] = accelerationMagnitude;
+	largeBufIndex++;
+	if (largeBufIndex == BIG_BUFFER_SIZE)
+		largeBufIndex = 0;
 }
 
-void executeStepTrackTask() {
+uint32_t getAccelMagnitude() {
 	int16_t acc_x = getImuXAccel();
 	int16_t acc_y = getImuYAccel();
 	int16_t acc_z = getImuZAccel();
 
-	// Filter x, y, & z data and multiply by linear sensitivity to convert each into mg
+	// IMU quite noisy so filter x, y, & z data with moving average
+	// Also convert to mg
 	int16_t filteredX = filterValue(acc_x, 0) * LINEAR_SENSITIVITY;
 	int16_t filteredY = filterValue(acc_y, 1) * LINEAR_SENSITIVITY;
 	int16_t filteredZ = filterValue(acc_z, 2) * LINEAR_SENSITIVITY;
 
-	uint32_t accelerationMagnitude = filteredX*filteredX + filteredY*filteredY + filteredZ*filteredZ;
+	return filteredX*filteredX + filteredY*filteredY + filteredZ*filteredZ;
+}
 
-	// Milestone spec says dont allow step increment when in set goal state
+// Increments steps by certain amount if SW1 is pressed
+void checkSW1() {
+	// Milestone spec says don't allow step increment when in set goal state
 	if (getState() != SET_GOAL && buttonsCheckButton(UP_BUTTON) == PRESSED) {
 		setSteps(getSteps() + SW1_STEP_INCREMENT);
 	}
-
-	/*if ((accelerationMagnitude > STEP_THRESHOLD) && !stepDetected) {
-		incrementSteps();
-		stepDetected = true;
-	} else if ((accelerationMagnitude < STEP_THRESHOLD) && stepDetected) {
-		stepDetected = false;
-	}*/
-
-	steps(accelerationMagnitude);
-
-	/*if (inbuiltStepDetected())
-		buzzerStart(HIGH);
-	else
-		buzzerStop();*/
 }
 
+void executeStepTrackTask() {
+	checkSW1();
+
+	uint32_t accelerationMagnitude = getAccelMagnitude();
+	updateBuffers(accelerationMagnitude);
+
+	// Use big buffer to calculate long term average so it gets smoothed out
+	uint64_t sum = 0;
+	for (uint16_t i = 0; i < BIG_BUFFER_SIZE; i++) {
+		sum += largeBuffer[i];
+	}
+	uint64_t currentAvg = sum / BIG_BUFFER_SIZE;
+
+	// Use smaller buffer to calculate short term variance of peaks
+	uint64_t nvar = 0;
+	for (uint16_t i = 0; i < SMALL_BUFFER_SIZE; i++) {
+		uint32_t diff = 0; // distance to mean value
+		if (smallBuffer[i] > currentAvg)
+			diff = smallBuffer[i] - currentAvg;
+		else
+			diff = currentAvg - smallBuffer[i];
+
+		nvar += diff * diff;
+	}
+
+	if (accelerationMagnitude > lastPeak) { // Update current highest value
+		lastPeak = accelerationMagnitude;
+	}
+
+	// Detect a step when we have peaked and are coming back down to cross the average
+	bool crossedBelowAvg = accelerationMagnitude <= lastAccelerationMagnitude && accelerationMagnitude < currentAvg && lastAccelerationMagnitude >= lastAverage;
+	// The peak must also be big enough, otherwise its just noise. Can look at variance and max height.
+	bool sufficientPeak = nvar > VAR_THRESHOLD && lastPeak - accelerationMagnitude >= MIN_PEAK_DIFF;
+
+	// And finally don't track steps that are too close because this will just be noise zig-zags
+	uint32_t tickVal = HAL_GetTick();
+	if (crossedBelowAvg && tickVal - timeOfLastStep >= MIN_STEP_PERIOD && sufficientPeak) {
+		incrementSteps();
+		timeOfLastStep = tickVal;
+		lastPeak = 0;
+	}
+
+	lastAccelerationMagnitude = accelerationMagnitude;
+	lastAverage = currentAvg;
+}
