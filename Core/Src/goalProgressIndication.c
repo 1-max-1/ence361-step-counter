@@ -26,8 +26,8 @@ static bool buzzerOn = false;
 #define NOTIFICATION_DURATION 800
 
 void goalProgressIndicationInit() {
-	rgb_led_all_off();
-	rgb_colour_all_on(); // White
+	rgbLEDSetStateAll(false);
+	rgbColourSetStateAll(true); // White
 }
 
 // Will clear the flag if the goal changes, so that the notification can be re-triggered
@@ -58,11 +58,11 @@ static void updateLEDs() {
 	uint16_t goalProgress = 100 * getSteps() / getGoal();
 	uint16_t ds3Brightness = 100 * goalProgress / 25;
 	if (ds3Brightness > 100) ds3Brightness = 100; // Clamp to 100% because PWM only goes to 100% duty cycle
-	rgb_led_set_brightness(RGB_UP, ds3Brightness);
+	rgbLEDSetBrightness(RGB_UP, ds3Brightness);
 
-	rgb_led_set_state(RGB_RIGHT, goalProgress >= 50);
-	rgb_led_set_state(RGB_DOWN, goalProgress >= 75);
-	rgb_led_set_state(RGB_LEFT, goalProgress >= 100);
+	rgbLEDSetState(RGB_RIGHT, goalProgress >= 50);
+	rgbLEDSetState(RGB_DOWN, goalProgress >= 75);
+	rgbLEDSetState(RGB_LEFT, goalProgress >= 100);
 }
 
 void goalProgressIndicationUpdate() {

@@ -3,8 +3,9 @@
  *
  * Authors: Max Hosking, Alex Pirie
  *
- * This task stores values from the ADC connected to the joystick
+ * This is a hardware module exposing functions to interact with the joystick
  */
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -15,10 +16,9 @@
 #include "gpio.h"
 #include "stm32c0xx_hal.h"
 
-
-//parameters needed for the specific joystick mounted to the racp board
+//parameters needed for the specific joystick mounted to our RCAP board
 #define NUM_BUT_POLLS 3
-#define BUT_POLL_HZ 100
+#define NUM_BUT_POLLS_LONG_PRESS 100
 #define JOYSTICK_LEFT_OUTER_VAL 4045
 #define JOYSTICK_LEFT_INNER_VAL 2300
 #define JOYSTICK_RIGHT_OUTER_VAL 240
@@ -42,9 +42,10 @@ typedef struct
 	uint8_t heldCount;
 } joystickButtonProperties_t;
 
-static uint16_t raw_adc[2];
-
 joystickButtonProperties_t joystickButton;
+
+static uint16_t joystickX;
+static uint16_t joystickY;
 
 void joystickInit() {
 	joystickButton.port = GPIOB;
@@ -53,99 +54,93 @@ void joystickInit() {
 }
 
 void joystickUpdate() {
-	raw_adc[0] = adcTaskGetJoystickY();
-	raw_adc[1] = adcTaskGetJoystickX();
+	joystickY = adcTaskGetJoystickY();
+	joystickX = adcTaskGetJoystickX();
 
-	GPIO_PinState rawState = HAL_GPIO_ReadPin(joystickButton.port, joystickButton.pin);
+	GPIO_PinState rawButtonState = HAL_GPIO_ReadPin(joystickButton.port, joystickButton.pin);
 
-	// If reading is different from last confirmed state, increment counter
-    if (rawState != joystickButton.state) {
+	// We must be in the different state for a certain number of polls to be considered "new state"
+    if (rawButtonState != joystickButton.state) {
     	joystickButton.newStateCount++;
-    	// If count exceeds poll count, confirm change of state
     	if (joystickButton.newStateCount >= NUM_BUT_POLLS) {
-    		joystickButton.state = rawState;
-    		joystickButton.hasChanged = true;	// Reset by call to buttons_checkButton()
+    		joystickButton.state = rawButtonState;
+    		joystickButton.hasChanged = true;	// Reset flag so getJoystickButtonState() returns the new state
     		joystickButton.newStateCount = 0;
     		joystickButton.heldCount = 0;
     	}
-    } else if (joystickButton.state != joystickButton.normalState && joystickButton.heldCount < BUT_POLL_HZ) {
+    // Once pressed, now we can track how long its being held for
+    } else if (joystickButton.state != joystickButton.normalState && joystickButton.heldCount < NUM_BUT_POLLS_LONG_PRESS) {
     	joystickButton.heldCount++;
-    } else if (joystickButton.heldCount == BUT_POLL_HZ) { // Now entering the long_press state
+    } else if (joystickButton.heldCount == NUM_BUT_POLLS_LONG_PRESS) { // Now entering the long_press state
     	joystickButton.hasChanged = true;
-    	joystickButton.heldCount++;
+    	joystickButton.heldCount++; // Increment once more to avoid re-triggering this if statement
     } else {
     	joystickButton.newStateCount = 0;
     }
 }
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
-
+buttonState_t getJoystickButtonState() {
+	// If we've changed since the last time this function has called, then we can return the state
+	// Otherwise no change to avoid apparent "repeated presses"
+	if (joystickButton.hasChanged) {
+		joystickButton.hasChanged = false;
+		if (joystickButton.state == joystickButton.normalState) {
+			return RELEASED;
+		// Holding for many polls means user is trying for a long press
+		} else if (joystickButton.heldCount >= NUM_BUT_POLLS_LONG_PRESS) {
+			return LONG_PRESSED;
+		} else {
+			return PRESSED;
+		}
+	}
+	return NO_CHANGE;
 }
 
-uint16_t getXRaw() {
-	return raw_adc[1];
-}
-
-uint16_t getYRaw() {
-	return raw_adc[0];
-}
+/**
+ * Return poewr as a range from 0-100, with zero being in the middle at rest, and 100% at either end.
+ * Must consider the uinner and outer thresholds as these are not always the same for the joystick.
+ */
 
 uint16_t getXPower() {
 	uint16_t xPercentage = 0;
-	//gives joystick x-axis displacement as percantage for usage with a threshold, no direction
-	if (raw_adc[1] >= JOYSTICK_LEFT_INNER_VAL) {
-		xPercentage = (raw_adc[1] - JOYSTICK_LEFT_INNER_VAL) * 100 / (JOYSTICK_LEFT_OUTER_VAL - JOYSTICK_LEFT_INNER_VAL);
-	} else if (raw_adc[1] <= JOYSTICK_RIGHT_INNER_VAL) {
-		xPercentage = (JOYSTICK_RIGHT_INNER_VAL - raw_adc[1]) * 100 / (JOYSTICK_RIGHT_INNER_VAL - JOYSTICK_RIGHT_OUTER_VAL);
+	if (joystickX >= JOYSTICK_LEFT_INNER_VAL) {
+		xPercentage = (joystickX - JOYSTICK_LEFT_INNER_VAL) * 100 / (JOYSTICK_LEFT_OUTER_VAL - JOYSTICK_LEFT_INNER_VAL);
+	} else if (joystickX <= JOYSTICK_RIGHT_INNER_VAL) {
+		xPercentage = (JOYSTICK_RIGHT_INNER_VAL - joystickX) * 100 / (JOYSTICK_RIGHT_INNER_VAL - JOYSTICK_RIGHT_OUTER_VAL);
 	}
 	return xPercentage;
 }
 
 uint16_t getYPower() {
 	uint16_t yPercentage = 0;
-	//gives joystick y-axis displacement as percantage for usage with a threshold, no direction
-	if (raw_adc[0] >= JOYSTICK_DOWN_INNER_VAL) {
-		yPercentage = (raw_adc[0] - JOYSTICK_DOWN_INNER_VAL) * 100 / (JOYSTICK_DOWN_OUTER_VAL - JOYSTICK_DOWN_INNER_VAL);
-	} else if (raw_adc[0] <= JOYSTICK_UP_INNER_VAL) {
-		yPercentage = (JOYSTICK_UP_INNER_VAL - raw_adc[0]) * 100 / (JOYSTICK_UP_INNER_VAL - JOYSTICK_UP_OUTER_VAL);
+	if (joystickY >= JOYSTICK_DOWN_INNER_VAL) {
+		yPercentage = (joystickY - JOYSTICK_DOWN_INNER_VAL) * 100 / (JOYSTICK_DOWN_OUTER_VAL - JOYSTICK_DOWN_INNER_VAL);
+	} else if (joystickY <= JOYSTICK_UP_INNER_VAL) {
+		yPercentage = (JOYSTICK_UP_INNER_VAL - joystickY) * 100 / (JOYSTICK_UP_INNER_VAL - JOYSTICK_UP_OUTER_VAL);
 	}
 	return yPercentage;
 }
 
+/**
+ * Directionality is just measuring if joystick is beyond threshold in each direction
+ */
+
  xDirection_t getXDirection() {
-	 xDirection_t xDirection = RESTX;
-	 //allows directionality when using the xPower() function
-	if (raw_adc[1] >= JOYSTICK_LEFT_INNER_VAL) {
-		xDirection = LEFT;
-	} else if (raw_adc[1] <= JOYSTICK_RIGHT_INNER_VAL) {
-		xDirection = RIGHT;
+	xDirection_t xDirection = JOYSTICK_RESTX;
+	if (joystickX >= JOYSTICK_LEFT_INNER_VAL) {
+		xDirection = JOYSTICK_LEFT;
+	} else if (joystickX <= JOYSTICK_RIGHT_INNER_VAL) {
+		xDirection = JOYSTICK_RIGHT;
 	}
 	return xDirection;
 }
 
  yDirection_t getYDirection() {
-	 yDirection_t yDirection = RESTY;
-	 //allows for directionality with the yPower() function
-	if (raw_adc[0] >= JOYSTICK_DOWN_INNER_VAL) {
-		yDirection = DOWN;
-	} else if (raw_adc[0] <= JOYSTICK_UP_INNER_VAL) {
-		yDirection = UP;
+	yDirection_t yDirection = JOYSTICK_RESTY;
+	if (joystickY >= JOYSTICK_DOWN_INNER_VAL) {
+		yDirection = JOYSTICK_DOWN;
+	} else if (joystickY <= JOYSTICK_UP_INNER_VAL) {
+		yDirection = JOYSTICK_UP;
 	}
 	return yDirection;
 }
-
- buttonState_t getJoystickButtonState() {
-	 if (joystickButton.hasChanged) {
-		 joystickButton.hasChanged = false;
-		 if (joystickButton.state == joystickButton.normalState) {
-			 return RELEASED;
-		 } else if (joystickButton.heldCount >= BUT_POLL_HZ) {
-			 return LONG_PRESSED;
-		 } else {
-			 return PRESSED;
-		 }
-	 }
-	 return NO_CHANGE;
- }
-
-

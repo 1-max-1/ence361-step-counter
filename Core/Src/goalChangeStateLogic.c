@@ -52,6 +52,7 @@ uint16_t calculateTentativeGoal() {
 }
 
 void goalChangeStateLogic() {
+	// Tentative goal needed as new goal may not always be selected, allows for rollback to previous goal
 	uint16_t tentativeGoal = calculateTentativeGoal();
 	setTentativeGoal(tentativeGoal);
 

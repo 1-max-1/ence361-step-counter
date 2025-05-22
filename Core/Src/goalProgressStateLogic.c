@@ -30,7 +30,7 @@ static void checkForStateChange() {
 	uint8_t xPower = getXPower();
 	if (xPower > STATE_SWITCH_THRESHOLD) {
 		canExitState = false;
-		if (getXDirection() == LEFT) {
+		if (getXDirection() == JOYSTICK_LEFT) {
 			decrementState();
 		} else {
 			incrementState();
@@ -42,7 +42,7 @@ void goalProgressStateLogic() {
 	// Don't allow state to keep changing while joystick held
 	if (canExitState) {
 		checkForStateChange();
-	} else if (getXDirection() == RESTX) {
+	} else if (getXDirection() == JOYSTICK_RESTX) {
 		canExitState = true;
 	}
 
@@ -53,7 +53,7 @@ void goalProgressStateLogic() {
 		// Don't allow unit to keep changing more than once while joystick held
 		canChangeUnit = false;
 		toggleGoalUnit();
-	} else if (getYDirection() == RESTY) {
+	} else if (getYDirection() == JOYSTICK_RESTY) {
 		canChangeUnit = true;
 	}
 

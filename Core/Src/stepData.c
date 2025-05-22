@@ -7,11 +7,13 @@
  * Author: Alex Pirie
  *
  */
-#include <stdio.h>
-#include <stdint.h>
+
 #include "stepData.h"
 
-//for conversions between steps and current unit
+#include <stdio.h>
+#include <stdint.h>
+
+//for conversions between steps and unit of distance
 #define STEP_DISTANCE_KM 0.0009f
 #define STEP_DISTANCE_YD 0.9843f
 
@@ -23,8 +25,8 @@ static uint16_t tentativeGoal;
 
 void stepDataInit() {
 	stepCount = 0;
-	distUnit = KM;
-	goalUnit = PERCENT;
+	distUnit = UNIT_KM;
+	goalUnit = UNIT_PERCENT;
 	currentGoal = 1000;
 	tentativeGoal = 1000;
 }
@@ -50,7 +52,7 @@ uint16_t getGoal() {
 }
 
 uint16_t getGoalPercent() {
-	// Add 0.5 to round
+	// Add 0.5 to round, otherwise it would only round down
 	uint16_t goalPercent = 100.0f * (float)stepCount / (float)currentGoal + 0.5f;
 	return goalPercent;
 }
@@ -72,23 +74,23 @@ goalUnit_t getGoalUnit () {
 }
 
 void toggleDistanceUnit() {
-	if (distUnit == KM) {
-		distUnit = YD;
+	if (distUnit == UNIT_KM) {
+		distUnit = UNIT_YD;
 	} else {
-		distUnit = KM;
+		distUnit = UNIT_KM;
 	}
 }
 
 void toggleGoalUnit() {
-	if (goalUnit == PERCENT) {
-		goalUnit = RATIO;
+	if (goalUnit == UNIT_PERCENT) {
+		goalUnit = UNIT_RATIO;
 	} else {
-		goalUnit = PERCENT;
+		goalUnit = UNIT_PERCENT;
 	}
 }
 
 void setTentativeGoal(uint16_t newTentativeGoal) {
-	tentativeGoal = newTentativeGoal; //needed as new goal may not always be selected, allows for rollback to previous goal
+	tentativeGoal = newTentativeGoal;
 }
 
 uint16_t getTentativeGoal() {

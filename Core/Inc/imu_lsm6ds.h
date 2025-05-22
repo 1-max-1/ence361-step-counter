@@ -3,10 +3,13 @@
  *
  *  Created on: Nov 27, 2024
  *      Author: fsy13
+ *      Modified by: Alex Pirie
+ *
+ *  Handles reading and writing to IMU, exposes convenience functions
  */
 
-#ifndef INC_IMU_LSM6DS_H_
-#define INC_IMU_LSM6DS_H_
+#ifndef _IMU_LSM6DS_H_
+#define _IMU_LSM6DS_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -106,7 +109,7 @@ typedef enum {
 	X_OFS_USR = 0x73U,
 	Y_OFS_USR,
 	Z_OFS_USR
-} imu_register_t; //register locations for imu init
+} imu_register_t; // IMU register addresses
 
 // Standard options
 #define CTRL1_XL_HIGH_PERFORMANCE 0xA0U
@@ -128,7 +131,7 @@ int16_t getImuYAccel();
 //returns imu z-axis acceleration
 int16_t getImuZAccel();
 
-//testing imu prebuilt step detection (NOT IN USE FOR FINAL TESTING)
-bool isStep();
+// Testing step detection included in IMU chip (NOT IN USE FOR FINAL TESTING)
+bool inbuiltStepDetected();
 
-#endif /* INC_IMU_LSM6DS_H_ */
+#endif /* _IMU_LSM6DS_H_ */

@@ -13,8 +13,9 @@
 #include <stdbool.h>
 
 static bool testModeEnabled = false;
-
 static state_t currentState = CURRENT_STEPS;
+
+// The main states are linked in a loop, this does not include the goal change state which is outside of the loop
 #define FINAL_STATE_IN_MAIN_LOOP DISTANCE_TRAVELLED
 
 void incrementState() {

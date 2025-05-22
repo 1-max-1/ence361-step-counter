@@ -3,7 +3,7 @@
  *
  * Authors: Max Hosking, Alex Pirie
  *
- * This task stores values from the ADC connected to the joystick
+ * This is a hardware module exposing functions to interact with the joystick
  */
 
 #ifndef _JOYSTICK_H_
@@ -13,19 +13,15 @@
 
 #include "buttonStates.h"
 
-typedef enum {RESTX=0, LEFT, RIGHT} xDirection_t;
-typedef enum {RESTY=0, UP, DOWN} yDirection_t;
+typedef enum {JOYSTICK_RESTX=0, JOYSTICK_LEFT, JOYSTICK_RIGHT} xDirection_t;
+typedef enum {JOYSTICK_RESTY=0, JOYSTICK_UP, JOYSTICK_DOWN} yDirection_t;
 
 void joystickInit();
 //poll joystick ADC
 void joystickUpdate();
-// Return ADC value for x-axis
-uint16_t getXRaw();
-// Return ADC value for y-axis
-uint16_t getYRaw();
-//Return % deflection in x-axis
+//Return % deflection in x-axis. 0% is rest, 100% can be in either direction.
 uint16_t getXPower();
-//Return % deflection in y-axis
+//Return % deflection in y-axis. 0% is rest, 100% can be in either direction.
 uint16_t getYPower();
 //Return direction in x-axis
 xDirection_t getXDirection();

@@ -35,15 +35,20 @@ typedef enum
 // Set led brightness on scale from 0 to 100 (ignores values >100).
 // Brightness is not gamma-corrected so will appear non linear.
 // Currently only allowed with DS3, does nothing if called with other LED's.
-void rgb_led_set_brightness(rgb_led_t led, uint8_t brightness);
+void rgbLEDSetBrightness(rgb_led_t led, uint8_t brightness);
 
-void rgb_led_set_state(rgb_led_t, bool);
-void rgb_colour_set_state(rgb_colour_t, bool);
-void rgb_led_toggle(rgb_led_t led);
-void rgb_colour_toggle(rgb_colour_t colour);
-void rgb_led_all_on(void);
-void rgb_colour_all_on(void);
-void rgb_led_all_off(void);
-void rgb_colour_all_off(void);
+// Turn LED on or off
+void rgbLEDSetState(rgb_led_t, bool);
+// Toggles LED state
+void rgbLEDToggle(rgb_led_t led);
+// Turn on a specific colour for all LED's
+void rgbColourSetState(rgb_colour_t, bool);
+// Toggle on a specific colour for all LED's
+void rgbColourToggle(rgb_colour_t colour);
+
+// Turn all LED's on
+void rgbLEDSetStateAll(bool state);
+// Turn all colours on
+void rgbColourSetStateAll(bool state);
 
 #endif /* _RGB_H_ */

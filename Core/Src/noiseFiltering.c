@@ -1,3 +1,11 @@
+/**
+ * noiseFiltering.c
+ *
+ * Authors: Max Hosking, Alex Pirie
+ *
+ * This module provides an implementation of a moving average filter to use for generic int16_t data.
+ */
+
 #include "noiseFiltering.h"
 
 #include <stdint.h>
@@ -5,18 +13,19 @@
 #include <stdbool.h>
 
 typedef struct {
-	int16_t* pastValues;
-	int16_t* tapValues;
-	uint8_t currentIndex;
+	int16_t* pastValues; // Circular buffer
+	int16_t* tapValues; // Coefficients
+	uint8_t currentIndex; // Current index in circular buffer
 	uint8_t bufferLength;
 	int32_t currentSum;
-	bool fillBufferWithFirstValue;
+	bool fillBufferWithFirstValue; // If true then buffer will be initialized to the first value received
 	bool destroyed;
 } noiseFilter_t;
 
 #define NUM_FILTERS 4
 static noiseFilter_t noiseFilters[NUM_FILTERS];
 
+// Creates the struct required to store a filter and initializes memory
 noiseFilter_t createFilter(int16_t* coeffs, uint8_t bufferLength, bool fillBufferWithFirstValue) {
 	noiseFilter_t newFilter = {
 		.pastValues = calloc(bufferLength, sizeof(int16_t)),
@@ -36,6 +45,7 @@ noiseFilter_t createFilter(int16_t* coeffs, uint8_t bufferLength, bool fillBuffe
 }
 
 void destroyFilter(uint8_t filterID) {
+	// Free memory created by calloc
 	noiseFilter_t *filter = &noiseFilters[filterID];
 	free(filter->pastValues);
 	filter->pastValues = NULL;
@@ -70,10 +80,11 @@ int16_t filterValue(int16_t inputVal, uint8_t filterID) {
 			filter->fillBufferWithFirstValue = false;
 		}
 
+		// Want to replace the last value in the circular buffer and update sum so we get a moving average
 		filter->currentSum += (inputVal - filter->pastValues[filter->currentIndex]);
 		filter->pastValues[filter->currentIndex] = inputVal;
 		filter->currentIndex = (filter->currentIndex + 1) % filter->bufferLength;
 	}
 
-	return filter->currentSum / filter->bufferLength;
+	return filter->currentSum / filter->bufferLength; // Average
 }

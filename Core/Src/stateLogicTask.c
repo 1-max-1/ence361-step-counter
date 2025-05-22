@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+// If more states are added, insert the logic functions here
 void (*logicFunctions[])() = {
 	&currentStepsStateLogic,
 	&goalProgressStateLogic,
@@ -30,8 +31,9 @@ void (*logicFunctions[])() = {
 void executeStateLogicTask() {
 	logicFunctions[(uint8_t)getState()]();
 
-	checkForTestModeTrigger();
+	// Test mode is also kind of like a state, but we can be in it regardless of the display state
 
+	checkForTestModeTrigger();
 	if (isTestModeEnabled())
 		testModeStateLogic();
 }

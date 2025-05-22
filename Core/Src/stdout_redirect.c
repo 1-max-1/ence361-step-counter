@@ -1,3 +1,9 @@
+/**
+ * stdout_redirect.c
+ * Author: Max Hosking
+ * Allows printf() to be used to transmit data over the serial connection
+ */
+
 #include "usart.h"
 
 int __io_putchar(int ch) {

@@ -88,9 +88,10 @@ const rgb_gpio_config_t RGB_COLOURS[RGB_NUM_COLOURS] = {
 	},
  };
 
-void rgb_led_set_state(rgb_led_t led, bool enabled) {
+void rgbLEDSetState(rgb_led_t led, bool enabled) {
+	// If PWM-capable we have to use the duty cycle method, otherwise we can just toggle the GPIO directly
 	if (RGB_LEDS[led].pwmEnabled) {
-		rgb_led_set_brightness(led, enabled ? 100 : 0);
+		rgbLEDSetBrightness(led, enabled ? 100 : 0);
 	} else {
 		GPIO_PinState onState = RGB_LEDS[led].activeHigh ? GPIO_PIN_SET : GPIO_PIN_RESET;
 		GPIO_PinState state = enabled ? onState : 1 - onState;
@@ -98,55 +99,46 @@ void rgb_led_set_state(rgb_led_t led, bool enabled) {
 	}
 }
 
-void rgb_led_set_brightness(rgb_led_t led, uint8_t brightness) {
+void rgbLEDSetBrightness(rgb_led_t led, uint8_t brightness) {
+	// Use duty cycle to set brightness, ignore non pwm-capable calls
 	if (RGB_LEDS[led].pwmEnabled) {
 		pwm_setDutyCycle(RGB_LEDS[led].tim, RGB_LEDS[led].timChannel, brightness);
 	}
 }
 
-void rgb_colour_set_state(rgb_colour_t colour, bool enabled) {
+void rgbColourSetState(rgb_colour_t colour, bool enabled) {
+	// TODO: could add support for pwm-enabled colors
 	if (!RGB_COLOURS[colour].pwmEnabled) {
+		// Toggle GPIO, ignore PWM-capable calls
 		GPIO_PinState onState = RGB_COLOURS[colour].activeHigh ? GPIO_PIN_SET : GPIO_PIN_RESET;
 		GPIO_PinState state = enabled ? onState : 1 - onState;
 		HAL_GPIO_WritePin(RGB_COLOURS[colour].port, RGB_COLOURS[colour].pin, state);
 	}
-	// TODO: could add support for pwm-enabled colors
 }
 
-void rgb_led_toggle(rgb_led_t led) {
+void rgbLEDToggle(rgb_led_t led) {
+	// If PWM-capable we have to use the duty cycle method, otherwise we can just toggle the GPIO directly
 	if (RGB_LEDS[led].pwmEnabled) {
 		uint8_t duty = pwm_getDutyCycle(RGB_LEDS[led].tim, RGB_LEDS[led].timChannel);
-		rgb_led_set_brightness(led, duty == 0 ? 255 : 0);
+		rgbLEDSetBrightness(led, duty == 0 ? 255 : 0);
 	} else {
 		HAL_GPIO_TogglePin(RGB_LEDS[led].port, RGB_LEDS[led].pin);
 	}
 }
 
-void rgb_colour_toggle(rgb_colour_t colour) {
+void rgbColourToggle(rgb_colour_t colour) {
 	HAL_GPIO_TogglePin(RGB_COLOURS[colour].port, RGB_COLOURS[colour].pin);
 }
 
 
-void rgb_led_all_on(void) {
+void rgbLEDSetStateAll(bool state) {
 	for (uint8_t i = 0; i < RGB_NUM_LEDS; i++) {
-		rgb_led_set_state(i, true);
+		rgbLEDSetState(i, state);
 	}
 }
 
-void rgb_led_all_off(void) {
-	for (uint8_t i = 0; i < RGB_NUM_LEDS; i++) {
-		rgb_led_set_state(i, false);
-	}
-}
-
-void rgb_colour_all_on(void) {
+void rgbColourSetStateAll(bool state) {
 	for (uint8_t i = 0; i < RGB_NUM_COLOURS; i++) {
-		rgb_colour_set_state(i, true);
-	}
-}
-
-void rgb_colour_all_off(void) {
-	for (uint8_t i = 0; i < RGB_NUM_COLOURS; i++) {
-		rgb_colour_set_state(i, false);
+		rgbColourSetState(i, state);
 	}
 }

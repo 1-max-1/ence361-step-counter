@@ -21,7 +21,7 @@ static void checkForStateChange() {
 	// Change state when user moves joystick to left or right
 	if (getXPower() >= STATE_SWITCH_THRESHOLD) {
 		canExitState = false;
-		if (getXDirection() == LEFT)
+		if (getXDirection() == JOYSTICK_LEFT)
 			decrementState();
 		else
 			incrementState();
@@ -32,7 +32,7 @@ void distanceTravelledStateLogic() {
 	// Don't allow state to keep changing while joystick held
 	if (canExitState) {
 		checkForStateChange();
-	} else if (getXDirection() == RESTX) {
+	} else if (getXDirection() == JOYSTICK_RESTX) {
 		canExitState = true;
 	}
 
@@ -41,7 +41,7 @@ void distanceTravelledStateLogic() {
 	if (canChangeUnit && !isTestModeEnabled() && getYPower() >= UNIT_SWITCH_THRESHOLD) {
 		canChangeUnit = false; // Don't allow unit to keep changing while joystick held
 		toggleDistanceUnit();
-	} else if (getYDirection() == RESTY) {
+	} else if (getYDirection() == JOYSTICK_RESTY) {
 		canChangeUnit = true; // Joystick at rest means we can re-enable changes
 	}
 }

@@ -1,3 +1,11 @@
+/**
+ * noiseFiltering.h
+ *
+ * Authors: Max Hosking, Alex Pirie
+ *
+ * This module provides an implementation of a moving average filter to use for generic int16_t data.
+ */
+
 #ifndef _NOISE_FILTERING_H_
 #define _NOISE_FILTERING_H_
 
@@ -13,4 +21,4 @@ int16_t filterValue(int16_t processValue, uint8_t filterID);
 // The filter cannot be updated/used after it has been destroyed
 void destroyFilter(uint8_t filterID);
 
-#endif
+#endif // _NOISE_FILTERING_H_

@@ -1,8 +1,11 @@
 /*
  * imu_lsm6ds.c
  *
- *  Created on: Nov 28, 2024
+ *  Created on: Nov 27, 2024
  *      Author: fsy13
+ *      Modified by: Alex Pirie
+ *
+ *  Handles reading and writing to IMU, exposes convenience functions
  */
 
 #include "imu_lsm6ds.h"
@@ -16,7 +19,8 @@ void imuInit() {
 	// Enable accelerometer with high performance
 	imu_lsm6ds_write_byte(CTRL1_XL, CTRL1_XL_HIGH_PERFORMANCE);
 
-	imu_lsm6ds_write_byte(CTRL10_C, 0b0011100);
+	// Enabled on-chip step detection
+	//imu_lsm6ds_write_byte(CTRL10_C, CTRL10_C_ENABLE_PEDO);
 }
 
 void imu_lsm6ds_write_byte(imu_register_t register_address, uint8_t value)
@@ -48,29 +52,29 @@ uint8_t imu_lsm6ds_read_byte(imu_register_t register_address)
 
 
 int16_t getImuXAccel() {
-	// Retrieve x acceleration data and convert to int16_t
+	// Retrieve x acceleration data in 2 byte transmission and convert to int16_t
 	uint8_t accXLow = imu_lsm6ds_read_byte(OUTX_L_XL);
-	uint8_t accXHhigh = imu_lsm6ds_read_byte(OUTX_H_XL);
+	uint8_t accXHigh = imu_lsm6ds_read_byte(OUTX_H_XL);
 	int16_t accX = (accXHigh << 8) | accXLow;
 	return accX;
 }
 
 int16_t getImuYAccel() {
-	// Retrieve y acceleration data and convert to int16_t
+	// Retrieve x acceleration data in 2 byte transmission and convert to int16_t
 	uint8_t accYLow = imu_lsm6ds_read_byte(OUTY_L_XL);
-	uint8_t accYHhigh = imu_lsm6ds_read_byte(OUTY_H_XL);
+	uint8_t accYHigh = imu_lsm6ds_read_byte(OUTY_H_XL);
 	int16_t accY = (accYHigh << 8) | accYLow;
 	return accY;
 }
 
 int16_t getImuZAccel() {
-	// Retrieve z acceleration data and convert to int16_t
+	// Retrieve x acceleration data in 2 byte transmission and convert to int16_t
 	uint8_t accZLow = imu_lsm6ds_read_byte(OUTZ_L_XL);
 	uint8_t accZHigh = imu_lsm6ds_read_byte(OUTZ_H_XL);
 	int16_t accZ = (accZHigh << 8) | accZLow;
 	return accZ;
 }
 
-bool isStep() {
+bool inbuiltStepDetected() {
 	return imu_lsm6ds_read_byte(FUNC_SRC1) & (1 << 4);
 }

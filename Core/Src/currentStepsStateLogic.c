@@ -25,7 +25,7 @@ static void checkForStateChange() {
 	uint8_t xPower = getXPower(); // gets percentage of joystick deflection in x-axis
 	if (xPower > STATE_SWITCH_THRESHOLD) { // if above threshold for state change increment or decrement state based on direction
 		canExitState = false;
-		if (getXDirection() == LEFT) {
+		if (getXDirection() == JOYSTICK_LEFT) {
 			decrementState();
 		} else {
 			incrementState();
@@ -37,7 +37,7 @@ void currentStepsStateLogic() {
 	// Don't allow state to keep changing while joystick held
 	if (canExitState) {
 		checkForStateChange();
-	} else if (getXDirection() == RESTX) {
+	} else if (getXDirection() == JOYSTICK_RESTX) {
 		canExitState = true;
 	}
 }

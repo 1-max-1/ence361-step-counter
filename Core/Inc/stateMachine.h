@@ -28,6 +28,7 @@ typedef enum {
 void incrementState();
 // See incrementState()
 void decrementState();
+// Returns the current state. Use isTestModeEnabled() to get test mode status.
 state_t getState();
 
 // Enters the SET_GOAL state. No sanity checks, can be called anywhere.

@@ -1,6 +1,8 @@
 /*
  * pwm.c
  *
+ * Allows modification of PWM duty cycles
+ *
  *  Created on: Dec 18, 2024
  *      Author: fsy13
  */
