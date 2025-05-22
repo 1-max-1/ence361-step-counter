@@ -57,7 +57,7 @@ void checkForTestModeTrigger() {
 void testModeStateLogic() {
 	// Only increment step if the joystick is not at rest
 	yDirection_t yDirection = getYDirection();
-	if (yDirection == RESTY)
+	if (yDirection == JOYSTICK_RESTY)
 		return;
 
 	// The step increment changes based on how much we are pushing the joystick by
@@ -69,7 +69,7 @@ void testModeStateLogic() {
 		fullIncrement = 2;
 
 	int16_t scaledIncrement = fullIncrement * getYPower() / 100;
-	if (yDirection == DOWN)
+	if (yDirection == JOYSTICK_DOWN)
 		scaledIncrement *= -1;
 
 	// In test mode we cannot go past the current goal (as per spec M2.3)

@@ -58,7 +58,7 @@ uint16_t getGoalPercent() {
 }
 
 float getDistance() {
-	if (distUnit == KM) {
+	if (distUnit == UNIT_KM) {
 		return stepCount * STEP_DISTANCE_KM;
 	} else {
 		return stepCount * STEP_DISTANCE_YD;

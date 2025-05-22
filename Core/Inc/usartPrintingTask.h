@@ -1,17 +1,18 @@
 /*
  * usartPrinting.h
  *
- *  Authors: Alex Pirie
+ *  Authors: Alex Pirie, Max Hosking
  *
- *  handles displaying adc values over USART
+ *	Module for debugging only.
+ *  Handles displaying values over USART
  */
 
 #ifndef _USART_PRINTING_H_
 #define _USART_PRINTING_H_
 
-#include <stdint.h>
-
+// Enables or disables the printing of values
 void toggleUsartPrinting();
+// Runs the task
 void usartPrintingExecute();
 
-#endif
+#endif // _USART_PRINTING_H_

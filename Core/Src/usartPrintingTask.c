@@ -1,10 +1,12 @@
 /*
- * usartPrinting.c
+ * usartPrinting.h
  *
- *  Authors: Alex Pirie
+ *  Authors: Alex Pirie, Max Hosking
  *
- *  handles displaying adc values over USART
+ *	Module for debugging only.
+ *  Handles displaying values over USART
  */
+
 #include "usartPrintingTask.h"
 #include "usart.h"
 #include "adcTask.h"
@@ -13,13 +15,12 @@
 #include <string.h>
 #include <stdbool.h>
 
-// Debugging
 #include "stateMachine.h"
 
-static bool printUART = false;
+static bool printToUART = false;
 
 void toggleUsartPrinting() {
-	printUART = !printUART;
+	printToUART = !printToUART;
 }
 
 void usartPrintingExecute() {

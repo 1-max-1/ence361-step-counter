@@ -38,6 +38,7 @@ void showTestModeMessage(bool enabled) {
 void renderGenericLayout(char* title, char* dataString) {
 	ssd1306_Fill(Black);
 
+	// Layout of pages consists of title and data
 	ssd1306_SetCursor(0, 0);
 	ssd1306_WriteString(title, Font_7x10, White);
 	ssd1306_SetCursor(0, 15);
@@ -51,12 +52,14 @@ void renderGenericLayout(char* title, char* dataString) {
 	ssd1306_UpdateScreen();
 }
 
+// Creates data string from integer and renders the layout
 void renderGenericLayoutWithInt(char* title, char* dataFormatString, uint16_t data, char* unit) {
 	char buf[LONGEST_DATA_STRING];
 	snprintf(buf, LONGEST_DATA_STRING, dataFormatString, data, unit);
 	renderGenericLayout(title, buf);
 }
 
+// Creates data string from float and renders the layout
 void renderGenericLayoutWithFloat(char* title, char* dataFormatString, float data, char* unit) {
 	char buf[LONGEST_DATA_STRING];
 	snprintf(buf, LONGEST_DATA_STRING, dataFormatString, data, unit);
@@ -64,11 +67,11 @@ void renderGenericLayoutWithFloat(char* title, char* dataFormatString, float dat
 }
 
 void renderGoalPage() {
-	if (getGoalUnit() == PERCENT) {
+	if (getGoalUnit() == UNIT_PERCENT) { // Percentage
 		char unitString[9];
 		snprintf(unitString, 9, "of %u", getGoal());
 		renderGenericLayoutWithInt("Goal progress:", "%u%% %s", getGoalPercent(), unitString);
-	} else {
+	} else { // Ratio
 		char unitString[8];
 		snprintf(unitString, 8, "/ %u", getGoal());
 		renderGenericLayoutWithInt("Goal progress:", "%u %s", getSteps() , unitString);
@@ -80,9 +83,9 @@ void renderStepsTakenPage() {
 }
 
 void renderDistanceTravelledPage() {
-	if (getDistanceUnit() == KM) {
+	if (getDistanceUnit() == UNIT_KM) { // km
 		renderGenericLayoutWithFloat("Distance traveled:", "%0.2f %s", getDistance(), "km");
-	} else {
+	} else { // yards
 		renderGenericLayoutWithFloat("Distance traveled:", "%0.0f %s", getDistance(), "yards");
 	}
 }
