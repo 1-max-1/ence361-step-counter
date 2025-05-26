@@ -15,7 +15,7 @@ The user can set the goal by long pressing the joystick button when in the goal 
 
 The device will track the user’s progress towards the goal. In addition to the screen, progress is indicated with 4 LEDs. One LED will turn on for each 25% of the goal completed. When progress is below 25%, the first LED will gradually increase in brightness until the goal reaches 25%. Once the goal has been reached, the user will be notified with the buzzer and the haptic feedback motor, which will turn on for a short duration.
 
-The device also includes a test mode where the user can manually set the number of steps. This mode can be toggled by double-tapping switch #2. While in test mode, the joystick can be moved up or down to manually increment or decrement the number of steps taken. The rate of change will depend on how far the joystick is pushed. The step count can also be manually incremented in steps of 80 by pressing switch #1. This feature is active even when not in test mode.
+The device also includes a test mode where the user can manually set the number of steps. This mode can be toggled by double-tapping switch 2. While in test mode, the joystick can be moved up or down to manually increment or decrement the number of steps taken. The rate of change will depend on how far the joystick is pushed. The step count can also be manually incremented in steps of 80 by pressing switch 1. This feature is active even when not in test mode.
 
 # Code structure
 ### General overview of code structure
