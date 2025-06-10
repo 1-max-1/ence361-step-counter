@@ -1,8 +1,9 @@
 # Step counter
+![Image](https://github.com/user-attachments/assets/e14d8b35-5b29-42d6-98b4-2b37d788b9d4)
 # Overview
 This repository contains the software for the ENCE361 step counter project. This project involved creating a pedometer device which tracks the number of steps taken by a user.
 
-The hardware used for this project consists of an STM32 nucleo devboard (STM32C071RBT6) attached to a second PCB known as the RCAP board (Robust Collection of Assorted Peripherals). The RCAP board contains several components including buttons, potentiometer, LEDs, joystick, buzzer, and screen. These peripherals allow the user to interact with the device.
+The hardware used for this project consists of an STM32 nucleo devboard (STM32C071RBT6) attached to a second PCB known as the RCAP board (Robust Collection of Assorted Peripherals). The RCAP board contains several components including buttons, a potentiometer, LEDs, joystick, buzzer, and screen. These peripherals allow the user to interact with the device.
 
 The device has several display modes which determines what is shown on the screen. The mode can be cycled by moving the joystick to the left or right. There are three main modes as follows:
 1.	The number of current steps will be shown on the screen.
